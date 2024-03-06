@@ -1,11 +1,8 @@
 # MyPortfolio
 
-## 프로젝트로 이동
+## 동영상
 |설명|링크|
 |---|---|
-|원카드 규칙|<https://github.com/1506022022/MapleOnecard_Copy/blob/main/Rule/Scripts/RuleSystem.cs>|
-|옵저버들을 관리하는 클래스|<https://github.com/1506022022/MapleOnecard_Copy/blob/main/Broadcaster/Broadcaster.cs>|
-|턴 시스템|<https://github.com/1506022022/MapleOnecard_Copy/blob/main/Turn/TurnSystem.cs>|
-|플레이어의 손패|<https://github.com/1506022022/MapleOnecard_Copy/blob/main/Hand/Scripts/MyHand.cs>|
-|상대 플레이어의 행동을 구현|<https://github.com/1506022022/MapleOnecard_Copy/blob/main/AI/Scripts/Bot.cs>|
-|게임보드 가운데놓여있는 카드뭉치|<https://github.com/1506022022/MapleOnecard_Copy/blob/main/Deck/Scripts/Deck.cs>|
+|메이플 원카드 모작, Unity, 2D|<https://youtu.be/q9gXEUtKlwg>|
+|바텐딩 시뮬레이션, Unity, SteamVR, ZibraEffects|<https://youtu.be/y-PIBJWMwbI>|
+|리소스 편집기, WinForm|<https://youtu.be/vhleLTXwjZw>|
