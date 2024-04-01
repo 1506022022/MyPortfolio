@@ -4,7 +4,7 @@
 
 포트폴리오 링크들을 모아둔 페이지입니다.
 
-[![Solved.ac Profile](http://mazassumnida.wtf/api/v2/generate_badge?boj=rlawpdnjs1998@naver.com)](https://solved.ac/rlawpdnjs1998@naver.com/)
+[![Solved.ac Profile](http://mazassumnida.wtf/api/v2/generate_badge?boj=rlawpdnjs1998)](https://solved.ac/rlawpdnjs1998/)
 
 ##
 **Notion**
