@@ -20,6 +20,7 @@
 깃허브에서 확인하고 싶으신 분은 아래의 **코드 바로가기** 링크를 눌러주세요.
 |설명|동영상 바로가기|코드 바로가기|
 |---|---|---|
+|2.5D 플랫포머 게임, Unity|<https://youtu.be/19IBKkHH6m4>|<https://github.com/1506022022/RPG>|
 |메이플 원카드 모작, Unity, 2D|<https://youtu.be/q9gXEUtKlwg>|<https://github.com/1506022022/MapleOnecard_Copy>|
 |바텐딩 시뮬레이션, Unity, SteamVR, ZibraEffects|<https://youtu.be/y-PIBJWMwbI>|<https://github.com/1506022022/BartenderSimulation>|
 |리소스 편집기, WinForm|<https://youtu.be/vhleLTXwjZw>||
