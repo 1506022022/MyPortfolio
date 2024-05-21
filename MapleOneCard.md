@@ -1,7 +1,7 @@
 # 메이플 원카드 모작
 <a href="https://youtu.be/FjVJnLojaAo">
   <p align="right">
-    <img src="https://github.com/1506022022/MapleOnecard_Copy/assets/88864717/cd487e23-fcb5-4dbe-b48e-e27d625f15d9.png" width="80%" height="80%">
+    <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/6358a717-736b-446b-90bb-528106250da7" width="80%" height="80%">
   </p>
 </a>
 
