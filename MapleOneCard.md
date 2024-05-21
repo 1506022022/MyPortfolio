@@ -4,7 +4,10 @@
   <p align="right">  
     <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/6358a717-736b-446b-90bb-528106250da7" width="80%" height="80%">
   </p>
-<a href="https://youtu.be/FjVJnLojaAo">동영상으로 이동</a>
+<div style="text-align: right;">
+    <a href="https://youtu.be/FjVJnLojaAo">동영상으로 이동</a>
+</div>
+
 
 # 프로젝트 구성
 |개요|내용|
