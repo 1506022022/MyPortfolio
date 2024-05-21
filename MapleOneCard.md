@@ -1,9 +1,11 @@
 # 메이플 원카드 모작
 
-  
-  <p align="right">  
+<p align="right">  
+  <a href="https://youtu.be/FjVJnLojaAo">
     <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/6358a717-736b-446b-90bb-528106250da7" width="80%" height="80%">
-  </p>
+  </a>
+</p>
+  
 <div align="right">
     <a href="https://youtu.be/FjVJnLojaAo">동영상으로 이동</a>
 </div>
