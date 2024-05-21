@@ -1,11 +1,10 @@
 # 메이플 원카드 모작
 
-  <p align="right">
-    <a href="https://youtu.be/FjVJnLojaAo">
+  
+  <p align="right">  
     <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/6358a717-736b-446b-90bb-528106250da7" width="80%" height="80%">
-    </a>
   </p>
-
+<a align ="right" href="https://youtu.be/FjVJnLojaAo">동영상으로 이동</a>
 
 # 프로젝트 구성
 |개요|내용|
