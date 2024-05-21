@@ -13,14 +13,6 @@
 
 
 
-##
-**핵심 구현요소**
+# 핵심 구현요소
 
-
-[![Solved.ac Profile](http://mazassumnida.wtf/api/v2/generate_badge?boj=rlawpdnjs1998)](https://solved.ac/rlawpdnjs1998/)
-
-코딩 테스트 리포지토리 링크
-
-
-<https://github.com/1506022022/CodingTest>
 
