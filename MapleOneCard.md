@@ -1,6 +1,9 @@
 # 메이플 원카드 모작
-  ![RPG](https://github.com/1506022022/MapleOnecard_Copy/assets/88864717/cd487e23-fcb5-4dbe-b48e-e27d625f15d9.png)
-<https://youtu.be/FjVJnLojaAo>
+<a href="https://youtu.be/FjVJnLojaAo">
+  <p align="right">
+    <img src="https://github.com/1506022022/MapleOnecard_Copy/assets/88864717/cd487e23-fcb5-4dbe-b48e-e27d625f15d9.png" width="80%" height="80%">
+  </p>
+</a>
 
 # 프로젝트 구성
 |개요|내용|
