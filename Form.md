@@ -1,7 +1,8 @@
 # MyPortfolio
 # <a href="https://youtu.be/OOWIdDPHG2o">
-  <img src="https://github.com/1506022022/RPG/assets/88864717/7f74bd5a-782f-4c15-b54b-25c7173dd974" alt="플레이 영상" width="160%" height="90%">
-</a>
+  # <img src="https://github.com/1506022022/RPG/assets/88864717/7f74bd5a-782f-4c15-b54b-25c7173dd974" alt="플레이 영상" width="160%" height="90%">
+# </a>
+
 **설명**
 
 포트폴리오 링크들을 모아둔 페이지입니다.
