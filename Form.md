@@ -2,7 +2,7 @@
  <a href="https://youtu.be/OOWIdDPHG2o">
    <img src="https://github.com/1506022022/RPG/assets/88864717/7f74bd5a-782f-4c15-b54b-25c7173dd974" alt="플레이 영상" width="160%" height="90%">
  </a>
-
+||||
 |---|---|---|
 |2.5D 플랫포머 게임, Unity|<https://youtu.be/19IBKkHH6m4>|<https://github.com/1506022022/RPG>|
 |메이플 원카드 모작, Unity, 2D|<https://youtu.be/FjVJnLojaAo>|<https://github.com/1506022022/MapleOnecard_Copy>|
