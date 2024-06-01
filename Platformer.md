@@ -1,10 +1,10 @@
 # 쁘띠 마크(가칭)
 
-<p align="right">  
+
   <a href="https://youtu.be/fqkyxzn_7ag">
     <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/32e28b88-13d9-4909-bf00-9eb8bd709fd6" width="80%" height="80%">
   </a>
-</p>
+
 
 <div align="right">
     <a href="https://youtu.be/fqkyxzn_7ag">동영상으로 이동</a>
