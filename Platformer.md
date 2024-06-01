@@ -6,9 +6,9 @@
   </a>
 
 
-
+<div align="left">
     <a href="https://youtu.be/fqkyxzn_7ag">동영상으로 이동</a>
-
+</div>
 
 
 # 프로젝트 구성
