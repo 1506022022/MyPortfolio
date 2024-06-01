@@ -22,7 +22,7 @@
 # 담당 구현요소
 
 - **애니메이션**
-![image](https://github.com/1506022022/MyPortfolio/assets/88864717/3f6e1d60-fcf9-4d93-ab6e-5695ec489341)
+![image](https://github.com/1506022022/MyPortfolio/assets/88864717/3f6e1d60-fcf9-4d93-ab6e-5695ec489341)   
 ```
 M Animator에 캐릭터 애니메이터를 참조합니다.
 자동으로 캐릭터 상태에 따른 애니메이터 트리거 매핑이 생성됩니다.
