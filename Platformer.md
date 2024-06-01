@@ -49,7 +49,7 @@
    
 캐릭터의 어빌리티와 조합해 시너지 효과를 가집니다.
    
-캐릭터 특성을 테스트 해 볼 수 있는 빌드파일 링크 ↓↓     
+**캐릭터 특성을 테스트 해 볼 수 있는 빌드파일 링크 ↓↓**   
 https://drive.google.com/file/d/1PFVbyEVSnUtqjqbctOvyuKhADu1GULuD/view?usp=drive_link
 ##
 - **히트 박스 콜라이더**   
