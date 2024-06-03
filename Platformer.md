@@ -1,4 +1,4 @@
-# 쁘띠 마크(가칭)
+# 큐트 마크(가칭)
 
 
   <a href="https://youtu.be/fqkyxzn_7ag">
