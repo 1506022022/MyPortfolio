@@ -25,9 +25,8 @@
 ``` C#
 public class SubjectSpace : MonoBehaviour
 {
-    
-    const string SubjectTargetTag = "Glass";    // 이벤트를 처리할 대상
-    public UnityEvent subjectEvent;             // 발동시킬 이벤트
+    const string SubjectTargetTag = "Glass";
+    public UnityEvent subjectEvent;
 
     void OnTriggerEnter(Collider other)
     {
@@ -38,17 +37,14 @@ public class SubjectSpace : MonoBehaviour
     {
         if (other.tag != SubjectTargetTag) return;
 
-        // 대상으로 부터 정보를 받아온다.
         var target = other.gameObject;
         var targetRigid = target.GetComponent<Rigidbody>();
         var targetInteractable = target.GetComponent<Interactable>();
         var attachedToHand = targetInteractable?.attachedToHand;
 
-        // 대상을 자유로운 상태로 만든다.
         if (Checker.Exist(targetInteractable, attachedToHand)) DetacchToHand();
         if (targetRigid) NonKinematicTarget();
 
-        // 제출 이벤트 발동
         if(subjectEvent.GetPersistentEventCount() > 0) subjectEvent.Invoke();
 
         #region localFunc
@@ -66,6 +62,15 @@ public class SubjectSpace : MonoBehaviour
     }
 }
 ```
+제출 공간은 게임의 목표에 해당하는 기능입니다.   
+제출된 칵테일을 확인한 후 목표 달성에 따른 이벤트들이 실행되어야 했습니다.   
+이 기능을 만들면서 실행될 이벤트가 확장되거나, 변경될 가능성이 높다고 생각했습니다.   
+그래서 수정되지 않을 부분과, 기능이 확장될 부분을 분리하는 것에 집중했습니다.   
+우선 제출을 인식하는 기능과, 제출된 칵테일을 플레이어로부터 분리하는 기능은   
+반드시 있어야 하는 부분으로 생각해 고정된 코드로 작성했습니다.   
+반면 제출 이벤트라는 확장 가능성 높은 기능은 유니티 이벤트를 사용해서 구현했습니다.   
+유니티 이벤트를 사용한 이유는 이벤트를 통해 제출 이펙트를 실행하고, 제출했다는 신호를 보내어 추후에 채점 기능을   
+추가하게 되었을 때에 사용할 수 있을 거라고 판단했기 때문입니다. 
 ##
 - **타이머**   
 ```
