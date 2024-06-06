@@ -14,18 +14,57 @@
 # 프로젝트 구성
 |개요|내용|
 |---|---|
-|장르|턴제 카드게임|
-|개발기간|2024.05.22 - 2024.06.21(진행중)|
-|참여인원|1인|
-|개발환경|DirectX12|
+|장르|VR 시뮬레이션|
+|개발기간|2023.03.01 - 2023.10.31|
+|참여인원|4인|
+|개발환경|유니티, HTC VIVE Pro 2|
 
 # 담당 구현요소
 
-- **딜러**
-```
-원카드의 규칙에 기반하여 턴을 관리합니다.   
-플레이어로부터 카드를 제출받고 턴을 제어합니다.   
-규칙상 패배처리된 플레이어를 턴에서 제외시킵니다.
+- **제출 공간**
+``` C#
+public class SubjectSpace : MonoBehaviour
+{
+    
+    const string SubjectTargetTag = "Glass";    // 이벤트를 처리할 대상
+    public UnityEvent subjectEvent;             // 발동시킬 이벤트
+
+    void OnTriggerEnter(Collider other)
+    {
+        EnterSpace(other);
+    }
+
+    void EnterSpace(Collider other)
+    {
+        if (other.tag != SubjectTargetTag) return;
+
+        // 대상으로 부터 정보를 받아온다.
+        var target = other.gameObject;
+        var targetRigid = target.GetComponent<Rigidbody>();
+        var targetInteractable = target.GetComponent<Interactable>();
+        var attachedToHand = targetInteractable?.attachedToHand;
+
+        // 대상을 자유로운 상태로 만든다.
+        if (Checker.Exist(targetInteractable, attachedToHand)) DetacchToHand();
+        if (targetRigid) NonKinematicTarget();
+
+        // 제출 이벤트 발동
+        if(subjectEvent.GetPersistentEventCount() > 0) subjectEvent.Invoke();
+
+        #region localFunc
+        void DetacchToHand()
+        {
+            attachedToHand.DetachObject(target);
+            targetInteractable.attachedToHand = null;
+        }
+
+        void NonKinematicTarget()
+        {
+            targetRigid.isKinematic = true;
+        }
+        #endregion
+    }
+}
 ```
 ##
 - **타이머**   
