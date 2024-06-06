@@ -112,10 +112,110 @@ public static class ID
  이러한 기능을 구현하기 위해 아이템에 ID값을 부여하고, GUI로 구분했습니다.
 ```
 ##
-- **카드**   
-```
-문양과 숫자 값을 가지고 있습니다.   
-값과 상태에 따라 애니메이션을 관리합니다.   
+- **정보창**   
+```C#
+[RequireComponent(typeof(ItemDataComponent))]
+public class ItemDataWindow : MonoBehaviour
+{
+    GameObject UIWindow;
+    static GameObject focusObject;
+    GameObjectManager _manager;
+    Text ui;
+
+    private void OnDestroy()
+    {
+        View(false);
+    }
+
+    private void OnDisable()
+    {
+        View(false);
+    }
+
+    void Awake()
+    {
+        _manager = GetComponent<GameObjectManager>();
+    }
+
+    void Update()
+    {
+        if (focusObject != gameObject)
+        {
+            View(false);
+            return;
+        }
+
+        var interactable = GetComponent<Interactable>();
+        if (interactable != null && interactable.attachedToHand != null)
+        {
+            View(false);
+            return;
+        }
+
+        ui.text = "";
+
+
+        if (_manager.IsCreated)
+        {
+            ui.text = "[" + _manager.GetName + "]";
+            ui.text += "\n\n" + _manager.GetDescription;
+        }
+
+    }
+
+    protected virtual void OnHandHoverBegin(Hand hand)
+    {
+        View(true);
+    }
+
+    protected virtual void OnHandHoverEnd(Hand hand)
+    {
+        View(false);
+    }
+
+    public void View(bool isView)
+    {
+        if (isView)
+        {
+            RemoveBeforeWindow();
+            OpenWindow();
+            SetWindowPos();
+            Operating(true);
+        }
+        else
+        {
+            Destroy(UIWindow);
+            UIWindow = null;
+            Operating(false);
+        }
+
+        void RemoveBeforeWindow()
+        {
+            var before = focusObject?.GetComponent<ItemDataWindow>()?.UIWindow;
+            if (before != null) Destroy(before);
+        }
+
+        void SetWindowPos()
+        {
+            Vector3 pos = transform.position;
+            pos.y = +1;
+            UIWindow.transform.position = pos;
+        }
+
+        void OpenWindow()
+        {
+            UIWindow = Instantiate(Resources.Load<GameObject>("ItemDataWindow"));
+            ui = UIWindow.GetComponentInChildren<Text>();
+            focusObject = gameObject;
+            UIWindow.SetActive(true);
+        }
+
+        void Operating(bool _is)
+        {
+            enabled = _is;
+        }
+    }
+}
 ```
 ##
 - **플레이어**   
