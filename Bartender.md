@@ -365,59 +365,48 @@ public class AllMeshPressure : MonoBehaviour
 
     bool TransformChanged()
     {
-        if (beforePos == transform.position &&
-            beforeRot == transform.eulerAngles)
+        if (beforePos != transform.position || beforeRot != transform.eulerAngles)
         {
-            return false;
+            beforePos = transform.position;
+            beforeRot = transform.eulerAngles;
+            return true;
         }
-        beforePos = transform.position;
-        beforeRot = transform.eulerAngles;
-        return true;
+        return false;
     }
 
     void UpdatePrefabMeshVertices()
     {
+        Vector3 minVertex = _prefabMesh.vertices.Min(v => v);
+        Vector3 maxVertex = _prefabMesh.vertices.Max(v => v);
+
         for (int i = 0; i < _prefabMesh.vertices.Length; i++)
         {
             _prefabMesh.vertices[i] = transform.rotation * _prefabMesh.vertices[i] + transform.position;
-            _prefabMesh.vertices[i].y = Mathf.Clamp(Floor(_prefabMesh.vertices[i].y, 1), _prefabMesh.vertices.Min(v => v.y), _prefabMesh.vertices.Max(v => v.y));
+            _prefabMesh.vertices[i].y = Mathf.Clamp(Floor(_prefabMesh.vertices[i].y, 1), minVertex.y, maxVertex.y);
         }
     }
 
     void ClampThresholdY()
     {
-        if (RangeY == Vector2.zero)
-        {
-            ThresholdY = Mathf.Clamp(ThresholdY, _layerVertices.Min(lv => lv.Key), _layerVertices.Max(lv => lv.Key));
-            return;
-        }
-
-        ThresholdY = Mathf.Clamp(ThresholdY, RangeY.x, RangeY.y);
+        ThresholdY = RangeY == Vector2.zero
+            ? Mathf.Clamp(ThresholdY, _layerVertices.Keys.Min(), _layerVertices.Keys.Max())
+            : Mathf.Clamp(ThresholdY, RangeY.x, RangeY.y);
     }
 
     void ApplyPressure()
     {
-        if (_mesh == null ||
-            _prefabMesh.vertices.All(v => v.y <= ThresholdY)) return;
+        if (_mesh == null || _prefabMesh.vertices.All(v => v.y <= ThresholdY)) return;
 
         var copyVertices = _prefabMesh.vertices.ToArray();
-        var upSideLayer = _prefabMesh.vertices.Where(v => v.y > ThresholdY)
-                                              .DefaultIfEmpty(_prefabMesh.vertices.Max(v => v.y))
-                                              .Min(v => v.y);
-
-        var targetLayerY = _layerVertices.Where(lv => lv.Key <= ThresholdY)
-                                         .Max(lv => lv.Key);
-        
+        var upSideLayer = _prefabMesh.vertices.Where(v => v.y > ThresholdY).DefaultIfEmpty().Min(v => v.y);
+        var targetLayerY = _layerVertices.Keys.Where(k => k <= ThresholdY).Max();
         var targetLayerVertices = _layerVertices[targetLayerY];
 
         for (int i = 0; i < copyVertices.Length; i++)
         {
-            if (copyVertices[i].y <= ThresholdY)
-            {
-                continue;
-            }
+            if (copyVertices[i].y <= ThresholdY) continue;
 
-            Vector3 vertex = copyVertices[i];
+            var vertex = copyVertices[i];
             var closestUpLayerVertex = GetClosestVertex(vertex, _prefabMesh.vertices.Where(v => v.y == upSideLayer));
             vertex = closestUpLayerVertex;
 
@@ -434,8 +423,7 @@ public class AllMeshPressure : MonoBehaviour
 
     Vector3 GetClosestVertex(Vector3 vertex, IEnumerable<Vector3> candidates)
     {
-        return candidates.OrderBy(c => Vector3.Distance(vertex, c))
-                         .First();
+        return candidates.Aggregate((min, next) => Vector3.Distance(vertex, next) < Vector3.Distance(vertex, min) ? next : min);
     }
 
     void LowerPrecision()
@@ -447,7 +435,8 @@ public class AllMeshPressure : MonoBehaviour
             _originMesh.vertices[i] = new Vector3(
                 Round(_originMesh.vertices[i].x, 2),
                 _vertices[i].y > 1.5f ? 1.56f : Round(_originMesh.vertices[i].y, 2),
-                Round(_originMesh.vertices[i].z, 2));
+                Round(_originMesh.vertices[i].z, 2)
+            );
         }
     }
 
@@ -456,10 +445,8 @@ public class AllMeshPressure : MonoBehaviour
         Debug.Assert(_prefabMesh.vertices != null && _prefabMesh.vertices.Length > 0, "vertices를 먼저 할당해주세요.");
 
         _layerVertices = _prefabMesh.vertices
-            .Distinct()
-            .OrderBy(v => v.y)
             .GroupBy(v => v.y)
-            .ToDictionary(g => g.Key, g => g.ToList());
+            .ToDictionary(g => g.Key, g => g.Distinct().ToList());
     }
 
     float Round(float value, float digits)
