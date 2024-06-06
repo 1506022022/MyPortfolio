@@ -78,7 +78,7 @@ public class SubjectSpace : MonoBehaviour
 ```
 ##
 - **아이템**   
-```
+```C#
 public static class ID
 {
     static int _groupRange = 10000;
