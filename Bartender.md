@@ -327,168 +327,151 @@ public class GameObjectManager : MonoBehaviour
 ```C#
 public class AllMeshPressure : MonoBehaviour
 {
-    Vector3 beforeRot, beforePos;
-
-    Mesh _mesh;
-    Vector3[] _vertices;
-    Dictionary<float, List<Vector3>> _layerVertices;
-    Mesh _prefabMesh;
     public float ThresholdY = 5.0f;
     public Vector2 RangeY = new Vector2();
+    Vector3[] _vertices;
+    Vector3 beforeRot, beforePos;
+    Mesh _mesh, _prefabMesh;
+    Dictionary<float, List<Vector3>> _layerVertices;
     [SerializeField] GameObject _vertexPrefab;
     [SerializeField] Mesh _originMesh;
-    private void Awake()
+
+    void Awake()
     {
         _mesh = GetComponent<MeshFilter>()?.mesh;
-        _vertices = _mesh.vertices;
-
         Debug.Assert(_mesh != null, "Mesh를 추가해주세요.");
-        PrefabMeshCreate();
-        LoweringPrecision();
-        Layering();
+        _vertices = _mesh.vertices;
+        InitializePrefabMesh();
+        LowerPrecision();
+        CreateLayerVertices();
     }
+
     void Update()
     {
-        PrefabMeshCreate();
-        if (beforePos != transform.position || beforeRot != transform.eulerAngles)
+        InitializePrefabMesh();
+        if (TransformChanged())
         {
-            beforePos = transform.position;
-            beforeRot = transform.eulerAngles;
-            for (int i = 0; i < _prefabMesh.vertices.Length; i++)
-            {
-                _prefabMesh.vertices[i] = transform.rotation * _prefabMesh.vertices[i] + transform.position;
-                _prefabMesh.vertices[i].y = Mathf.Clamp(Floor(_prefabMesh.vertices[i].y, 1), _prefabMesh.vertices.Min(x => x.y), _prefabMesh.vertices.Max(x => x.y));
-            }
-            Layering();
+            UpdatePrefabMeshVertices();
+            CreateLayerVertices();
         }
-        ClampY();
-        Pressure();
+        ClampThresholdY();
+        ApplyPressure();
     }
 
-    private void PrefabMeshCreate()
+    void InitializePrefabMesh()
     {
         _prefabMesh = Instantiate(_originMesh);
     }
 
+    bool TransformChanged()
+    {
+        if (beforePos == transform.position &&
+            beforeRot == transform.eulerAngles)
+        {
+            return false;
+        }
+        beforePos = transform.position;
+        beforeRot = transform.eulerAngles;
+        return true;
+    }
 
-    private void ClampY()
+    void UpdatePrefabMeshVertices()
+    {
+        for (int i = 0; i < _prefabMesh.vertices.Length; i++)
+        {
+            _prefabMesh.vertices[i] = transform.rotation * _prefabMesh.vertices[i] + transform.position;
+            _prefabMesh.vertices[i].y = Mathf.Clamp(Floor(_prefabMesh.vertices[i].y, 1), _prefabMesh.vertices.Min(v => v.y), _prefabMesh.vertices.Max(v => v.y));
+        }
+    }
+
+    void ClampThresholdY()
     {
         if (RangeY == Vector2.zero)
-            ThresholdY = Mathf.Clamp(ThresholdY, _layerVertices.Min(x => x.Key), _layerVertices.Max(x => x.Key));
-        else
-            ThresholdY = Mathf.Clamp(ThresholdY, RangeY.x, RangeY.y);
+        {
+            ThresholdY = Mathf.Clamp(ThresholdY, _layerVertices.Min(lv => lv.Key), _layerVertices.Max(lv => lv.Key));
+            return;
+        }
+
+        ThresholdY = Mathf.Clamp(ThresholdY, RangeY.x, RangeY.y);
     }
 
-    float Round(float originalNumber, float numberOfDigits)
+    void ApplyPressure()
     {
-        float roundedNumber = Mathf.Round(originalNumber * Mathf.Pow(10, numberOfDigits)) / Mathf.Pow(10, numberOfDigits);
-        return roundedNumber;
-    }
-    float Floor(float originalNumber, float numberOfDigits)
-    {
-        float flooredNumber = Mathf.Floor(originalNumber * Mathf.Pow(10, numberOfDigits)) / Mathf.Pow(10, numberOfDigits);
-        return flooredNumber;
-    }
-    void Pressure()
-    {
-        Vector3[] copyVertices = _prefabMesh.vertices.ToArray();
-        bool isFlat = _prefabMesh.vertices.Where(x => x.y <= ThresholdY).Count() == 0;
+        if (_mesh == null ||
+            _prefabMesh.vertices.All(v => v.y <= ThresholdY)) return;
 
-        if (_mesh == null) return;
-        if (isFlat) return;
+        var copyVertices = _prefabMesh.vertices.ToArray();
+        var upSideLayer = _prefabMesh.vertices.Where(v => v.y > ThresholdY)
+                                              .DefaultIfEmpty(_prefabMesh.vertices.Max(v => v.y))
+                                              .Min(v => v.y);
 
-        float upSideLayer = _prefabMesh.vertices.Max(x => x.y);
-        if (_vertices.Where(x => x.y > ThresholdY).Count() > 0)
-            upSideLayer = _prefabMesh.vertices.Where(x => x.y > ThresholdY).Min(x => x.y);
-        var targetLayer = _layerVertices.Where(x => x.Key <= ThresholdY).Max(x => x.Key);
-        var targetLayerVertices = _layerVertices[targetLayer];
+        var targetLayerY = _layerVertices.Where(lv => lv.Key <= ThresholdY)
+                                         .Max(lv => lv.Key);
+        
+        var targetLayerVertices = _layerVertices[targetLayerY];
 
         for (int i = 0; i < copyVertices.Length; i++)
         {
-            if (copyVertices[i].y > ThresholdY)
+            if (copyVertices[i].y <= ThresholdY)
             {
-                var vertex = copyVertices[i];
-
-                var upLayerVertices = _prefabMesh.vertices.Where(x => x.y == upSideLayer);
-                var upLayerMinDistance = upLayerVertices.Min(x => Vector3.Distance(vertex, x));
-                var upLayerMinDistanceVector = upLayerVertices.Where(x => Vector3.Distance(vertex, x) == upLayerMinDistance).First();
-                vertex = upLayerMinDistanceVector;
-
-                var minDistance = targetLayerVertices.Min(x => Vector3.Distance(vertex, x));
-                var minDistanceVector = targetLayerVertices.Where(x => Vector3.Distance(vertex, x) == minDistance).First();
-                float lerpT = Mathf.Abs(vertex.y - ThresholdY) / Mathf.Abs(vertex.y - minDistanceVector.y);
-                var lerpVector = Vector3.Lerp(vertex, minDistanceVector, lerpT);
-
-                copyVertices[i].y = ThresholdY;
-                copyVertices[i].x = lerpVector.x;
-                copyVertices[i].z = lerpVector.z;
+                continue;
             }
+
+            Vector3 vertex = copyVertices[i];
+            var closestUpLayerVertex = GetClosestVertex(vertex, _prefabMesh.vertices.Where(v => v.y == upSideLayer));
+            vertex = closestUpLayerVertex;
+
+            var closestTargetLayerVertex = GetClosestVertex(vertex, targetLayerVertices);
+            var lerpT = Mathf.Abs(vertex.y - ThresholdY) / Mathf.Abs(vertex.y - closestTargetLayerVertex.y);
+            var lerpVector = Vector3.Lerp(vertex, closestTargetLayerVertex, lerpT);
+
+            copyVertices[i] = new Vector3(lerpVector.x, ThresholdY, lerpVector.z);
         }
 
         _mesh.vertices = copyVertices;
         _mesh.RecalculateBounds();
     }
-    [ContextMenu("d")]
-    void CreateShowVerticesModel()
+
+    Vector3 GetClosestVertex(Vector3 vertex, IEnumerable<Vector3> candidates)
     {
-        List<Vector3> unique = new List<Vector3>();
-        Mesh newMesh = new Mesh();
-        newMesh.vertices = _vertices;
-        newMesh.triangles = _mesh.triangles;
-        GameObject obj = new GameObject("Model");
-
-        Debug.Assert(_vertices != null && _vertices.Length > 0, "vertices를 먼저 할당해주세요.");
-
-        obj.AddComponent<MeshRenderer>();
-        obj.AddComponent<MeshFilter>().mesh = newMesh;
-        int i = 0;
-        foreach (var item in _layerVertices)
-        {
-            foreach (var vertex in item.Value)
-            {
-                if (!unique.Any(x => x.Equals(vertex)))
-                {
-                    unique.Add(vertex);
-                    var abc = Instantiate(_vertexPrefab, obj.transform);
-                    abc.transform.SetLocalPositionAndRotation(vertex, Quaternion.identity);
-                    abc.GetComponent<MeshRenderer>().material.color = i % 2 == 0 ? Color.black : Color.red;
-                }
-            }
-            i++;
-        }
+        return candidates.OrderBy(c => Vector3.Distance(vertex, c))
+                         .First();
     }
 
-    void LoweringPrecision()
+    void LowerPrecision()
     {
         Debug.Assert(_originMesh.vertices != null && _originMesh.vertices.Length > 0, "vertices를 먼저 할당해주세요.");
 
         for (int i = 0; i < _originMesh.vertices.Length; i++)
         {
-            _originMesh.vertices[i].y = Round(_originMesh.vertices[i].y, 2);
-            _originMesh.vertices[i].y = _vertices[i].y > 1.5f ? 1.56f : _originMesh.vertices[i].y;
-            _originMesh.vertices[i].x = Round(_originMesh.vertices[i].x, 2);
-            _originMesh.vertices[i].z = Round(_originMesh.vertices[i].z, 2);
+            _originMesh.vertices[i] = new Vector3(
+                Round(_originMesh.vertices[i].x, 2),
+                _vertices[i].y > 1.5f ? 1.56f : Round(_originMesh.vertices[i].y, 2),
+                Round(_originMesh.vertices[i].z, 2));
         }
     }
 
-    void Layering()
+    void CreateLayerVertices()
     {
-        _layerVertices = new Dictionary<float, List<Vector3>>();
-        var list = _prefabMesh.vertices?.OrderBy(x => x.y).ToList();
-        var unique = new List<Vector3>();
-
         Debug.Assert(_prefabMesh.vertices != null && _prefabMesh.vertices.Length > 0, "vertices를 먼저 할당해주세요.");
 
-        foreach (var item in list)
-        {
-            if (unique.Any(x => x.Equals(item))) continue;
+        _layerVertices = _prefabMesh.vertices
+            .Distinct()
+            .OrderBy(v => v.y)
+            .GroupBy(v => v.y)
+            .ToDictionary(g => g.Key, g => g.ToList());
+    }
 
-            unique.Add(item);
-            if (_layerVertices.TryGetValue(item.y, out List<Vector3> e))
-                e.Add(item);
-            else
-                _layerVertices.Add(item.y, new List<Vector3>() { item });
-        }
+    float Round(float value, float digits)
+    {
+        float multiplier = Mathf.Pow(10, digits);
+        return Mathf.Round(value * multiplier) / multiplier;
+    }
+
+    float Floor(float value, float digits)
+    {
+        float multiplier = Mathf.Pow(10, digits);
+        return Mathf.Floor(value * multiplier) / multiplier;
     }
 }
 ```
