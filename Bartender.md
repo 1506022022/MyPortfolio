@@ -77,10 +77,34 @@ public class SubjectSpace : MonoBehaviour
 보내어 추후에 채점 기능을 추가하게 되었을 때에 사용할 수 있을 거라고 판단했기 때문입니다.
 ```
 ##
-- **타이머**   
+- **아이템**   
 ```
-상태에 따라 게이지를 제어합니다.   
-타임아웃 이벤트를 발송합니다.
+public static class ID
+{
+    static int _groupRange = 10000;
+    public enum ItemGroup
+    {
+        None = 0,
+        Bottle = 1,
+        Garnish = 2,
+        Glass = 3,
+        Tool = 4
+    }
+    public static ItemGroup GetGroup(int ID)
+    {
+        ItemGroup group = ItemGroup.None;
+        int gid = ID / _groupRange;
+
+        if (0 < gid && gid <= GetItemGroupEnumCount())
+            group = (ItemGroup)gid;
+
+        return group;
+    }
+    static int GetItemGroupEnumCount()
+    {
+        return Enum.GetNames(typeof(ItemGroup)).Length;
+    }
+}
 ```
 ##
 - **카드**   
