@@ -224,11 +224,103 @@ public class ItemDataWindow : MonoBehaviour
 오브젝트의 정보창만 출력하도록 설계했습니다.  
 ```
 ##
-- **플레이어**   
+- **오브젝트**   
+```C#
+public class GameObjectManager : MonoBehaviour
+{
+    #region static
+    static List<GameObjectManager> managers;
+
+    public static void InitGameObject()
+    {
+        foreach (var manager in managers)
+        {
+            if (!manager._isDontInit)
+                manager.Destroy();
+        }
+        foreach (var manager in managers)
+        {
+            if (!manager._isDontInit)
+                manager.Create();
+        }
+    }
+    #endregion
+
+    public bool IsCreated { get; private set; }
+    PositionIniter _posIniter;
+    [SerializeField] bool _isInitPos;
+    [SerializeField] bool _isDontDestoryChildrens;
+    [SerializeField] bool _isDontDestoryComponents;
+    [SerializeField] bool _isDontInit;
+    [SerializeField] bool _isDontCreate;
+    [SerializeField] Features _features;
+    [SerializeField] List<Component> _dontDestroy;
+
+    public int GetID => _features.ID;
+    public string GetName => _features.Name;
+    public string GetDescription => _features.Description;
+    public bool isEmptyGameObject => _features != null;
+    public ICustomEditorItemData GetGUI => _features.GetCustomEditor();
+
+    public void Create()
+    {
+        if (_isDontCreate) return;
+        if (IsCreated) return;
+        if (_isInitPos) _posIniter.SetPos();
+        _features.GetCustomEditor().Create(gameObject);
+        gameObject.SetActive(true);
+        IsCreated = true;
+    }
+
+    public void Destroy()
+    {
+        if (!_isDontDestoryChildrens)
+            GetGUI?.Destroy(gameObject);
+        IsCreated = false;
+        gameObject.SetActive(false);
+    }
+
+    void Awake()
+    {
+        if (managers == null) managers = new List<GameObjectManager>();
+        managers.Add(this);
+    }
+
+    void OnDestroy()
+    {
+        managers.Remove(this);
+    }
+
+    void Start()
+    {
+        _posIniter = new PositionIniter(transform, transform.position, transform.rotation);
+        DestroyOtherComponent();
+        Create();
+    }
+
+    class PositionIniter
+    {
+      Transform _target;
+      Vector3 _firstPos;
+      Quaternion _firstRot;
+
+      public PositionIniter(Transform target, Vector3 firstPos, Quaternion firstRot)
+      {
+          _target = target;
+          _firstPos = firstPos;
+          _firstRot = firstRot;
+      }
+      public void SetPos()
+      {
+          _target.SetPositionAndRotation(_firstPos, _firstRot);
+      }
+    }
 ```
-유저의 정보를가지고 있습니다.   
-손패를 가지고 있습니다.   
-마우스 이벤트를 기반으로 손패를 관리합니다.   
+```
+ 오브젝트를 파괴하는데 발생하는 오버헤드를 줄이기 위해서 오브젝트가 지닌 값만 변경하여
+전혀 다른 오브젝트로 동작하도록 설계했습니다. 오브젝트가 가져야 하는 기능을 작은 단위로 구분짓고
+
+
 ```
 ##
 - **게임 매니저**   
