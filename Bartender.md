@@ -114,6 +114,7 @@ public static class ID
 ##
 - **정보창**   
 ```C#
+[RequireComponent(typeof(GameObjectManager))]
 [RequireComponent(typeof(ItemDataComponent))]
 public class ItemDataWindow : MonoBehaviour
 {
@@ -216,6 +217,11 @@ public class ItemDataWindow : MonoBehaviour
         }
     }
 }
+```
+```
+ 플레이를 원할하게 진행하기 위해서 아이템을 호버링하면 정보창을 출력하는 기능이 필요했습니다.
+정보창은 동시에 하나만 출력해야 한다는 조건이 있었습니다. 때문에 싱글톤 패턴을 활용해서 포커스된
+오브젝트의 정보창만 출력하도록 설계했습니다.  
 ```
 ##
 - **플레이어**   
