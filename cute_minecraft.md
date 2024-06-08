@@ -101,7 +101,11 @@
   ## 위성
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/02a2404d-8482-41fc-8dd9-749b32d164de" width="40%" height="40%"/>
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/106066c7-a7d2-4650-8d0e-320c5b0f0154" width="365" height= "240"/>
-
+  
+```
+캐릭터 주위를 선회하는 오브젝트를 소환합니다.
+소환된 오브젝트는 Non Static일 때만 캐릭터 주위를 선회합니다.
+```
 ># 히트박스
   ## 블록 어빌리티
 ># 버튼 이벤트 액션
