@@ -15,7 +15,7 @@
   - **[블록 트리거](#블록-트리거)**   
   - **[액션 버튼](#액션-버튼)**   
   - **[배치](#배치)**
-- **특성(#특성)**
+- **[특성](#특성)**
   - **[Non static](#Non-Static)**
   - **[Distructibility](#Distructibility)**
   - **[Premeability](#Premeability)**
