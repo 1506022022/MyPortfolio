@@ -53,6 +53,7 @@
 ```  
 
 ># 어빌리티
+
 ```
 어빌리티는 캐릭터가 사용할 수 있는 능력입니다.
 어빌리티는 히트 박스 파이프라인에 의해서만 실행됩니다.
@@ -67,8 +68,13 @@
   ## 리버스 어빌리티
   
   ## Burn
-    <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/89e30422-310b-41a1-9f7f-60024a9ee68e" width="40%" height="40%"/>
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/89e30422-310b-41a1-9f7f-60024a9ee68e" width="40%" height="40%"/>
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b3af29c6-ec4f-42a9-80d1-b058518cb06c" width="365" height= "240"/>
   
+```
+불의 번지는 성질을 구현한 능력입니다.
+공격의 주체의 태그를 확인합니다. 어빌리티가 가진 값과 동일하다면 피격의 주체를 태우고, 공격의 주체를 복사합니다.
+```
   ## 파괴
   ## 밀어내는 힘
   ## 위성
