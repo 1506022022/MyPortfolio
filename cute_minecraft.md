@@ -66,7 +66,13 @@
 ```
 
   ## 리버스 어빌리티
-  
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b17592f0-b5ee-4430-ac87-9531a5bda068" width="365" height= "240"/>
+  ```
+  캐스터와 피격의 주체를 뒤바꿉니다.
+  예를 들어 파괴 어빌리티의 경우에는 피격의 주체에게 적용되는 능력이지만,
+  리버스 어빌리티에서는 캐스터에게 적용되는 능력으로 뒤바뀝니다.
+  ```
+
   ## Burn
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/89e30422-310b-41a1-9f7f-60024a9ee68e" width="40%" height="40%"/>
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b3af29c6-ec4f-42a9-80d1-b058518cb06c" width="365" height= "240"/>
@@ -76,9 +82,25 @@
 공격의 주체의 태그를 확인합니다. 어빌리티가 가진 값과 동일하다면 피격의 주체를 태우고, 공격의 주체를 복사합니다.
 ```
   ## 파괴
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/6ed05e6f-7888-4e7d-8a84-83a1aaac605d" width="40%" height="40%"/>
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/ec325d9a-e662-48b3-9ffa-85871ea6dc12" width="365" height= "240"/>
+
+```
+피격의 주체를 파괴합니다. 파괴된 오브젝트를 삭제됩니다.
+대상의 특성이 파괴가능인 상태에서만 적용되는 능력입니다.
+```
   ## 밀어내는 힘
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/056c9429-cd2d-4908-a940-05c9527fd342" width="40%" height="40%"/>
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/4c4fa3f2-5b75-490d-a1de-fa180cf35f8d" width="365" height= "240"/>
+
+```
+대상을 캐릭터가 바라보는 방향과 어빌리티가 가진 힘과 방향을 곱한 만큼 밀어내는 능력입니다.
+대상의 특성이 Non Static일 때만 동작합니다.
+```
   ## 위성
-  
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/02a2404d-8482-41fc-8dd9-749b32d164de" width="40%" height="40%"/>
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/106066c7-a7d2-4650-8d0e-320c5b0f0154" width="365" height= "240"/>
+
 ># 히트박스
   ## 블록 어빌리티
 ># 버튼 이벤트 액션
