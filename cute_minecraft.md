@@ -162,7 +162,7 @@
 예를 들어 아무런 동작도 할 수 없는 상태일 수도 있고, 점프, 공격, 상자 열기, 포탑 건설 등 매우 다양한 이벤트가 발동할 수 있습니다.
 ```
   ## 배치
-  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/9ad27990-4c52-46d8-99e1-dfb89ec5fe24" width="30%" height="30%"/>
+  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/9ad27990-4c52-46d8-99e1-dfb89ec5fe24" width="15%" height="15%"/>
 
 ```
 블록의 배치는 매우 중요한 사항입니다.
