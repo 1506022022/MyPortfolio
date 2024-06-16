@@ -27,7 +27,8 @@
 |개발환경|유니티, HTC VIVE Pro 2|
 
 ># 제출 공간
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/20250abe-9da2-4b5e-9266-21884dd67679" width="50%" height="50%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/e8dc2d56-7eef-42c7-973b-c1035e1194ac" width="40%" height="40%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b1adf08e-65d3-4ab1-b0bf-9e69facdecae" width="26.8%" height="26.8%"/>
 
 ```
  제출 공간은 게임의 목표에 해당하는 기능입니다. 제출된 칵테일을 확인한 후
@@ -86,7 +87,8 @@ public class SubjectSpace : MonoBehaviour
 ```
 
 ># 아이템
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/20250abe-9da2-4b5e-9266-21884dd67679" width="50%" height="50%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/2fa4ff9d-315d-4ab7-b3c5-b1b1ca367ff2" width="50%" height="50%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/15aab53a-a279-42d0-a1c7-3b3709fc4152" width="37%" height="37%"/>
 
 ```
  칵테일을 제조하는 과정에서 아이템을 구분해서 인식해야 하는 상황들이 있었습니다.
@@ -125,7 +127,7 @@ public static class ID
 ```
 
 ># 정보창
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/20250abe-9da2-4b5e-9266-21884dd67679" width="50%" height="50%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/afa8d1e1-7e4c-454b-8ec6-0dee0669dab5" width="50%" height="50%"/>
 
 ```
  플레이를 원할하게 진행하기 위해서 아이템을 호버링하면 정보창을 출력하는 기능이 필요했습니다.
