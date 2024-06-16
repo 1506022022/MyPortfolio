@@ -1,3 +1,15 @@
+# 큐트 마인크래프트(가칭)
+
+<p align="right">  
+  <a href="https://youtu.be/L0K8DpX9mrk">
+    <img src="https://github.com/1506022022/BartenderSimulation/assets/88864717/5f5bdec3-15f9-49c8-83fb-764ea4aee77f.png" width="80%" height="80%">
+  </a>
+</p>
+  
+<div align="right">
+    <a href="https://youtu.be/L0K8DpX9mrk">동영상으로 이동</a>
+</div>
+
 ># 목차
 - **[파이프 라인](#파이프-라인)**
   - **[플로우](#플로우)**
@@ -19,6 +31,14 @@
   - **[Non static](#Non-Static)**
   - **[Distructibility](#Distructibility)**
   - **[Premeability](#Premeability)**
+
+># 프로젝트 구성
+|개요|내용|
+|---|---|
+|장르|3D 퍼즐 액션|
+|개발기간|2023.05.01 - (진행중)|
+|참여인원|3인|
+|개발환경|유니티|
 
 ># 파이프 라인
 ```
