@@ -1,13 +1,13 @@
 # 큐트 마인크래프트(가칭)
 
 <p align="right">  
-  <a href="https://youtu.be/L0K8DpX9mrk">
-    <img src="https://github.com/1506022022/BartenderSimulation/assets/88864717/5f5bdec3-15f9-49c8-83fb-764ea4aee77f.png" width="80%" height="80%">
+  <a href="https://youtu.be/sdgQF_41lS4">
+    <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
   </a>
 </p>
   
 <div align="right">
-    <a href="https://youtu.be/L0K8DpX9mrk">동영상으로 이동</a>
+    <a href="https://youtu.be/sdgQF_41lS4">동영상으로 이동</a>
 </div>
 
 ># 목차
