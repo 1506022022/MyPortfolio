@@ -613,9 +613,6 @@ public class SlotBoard : MonoBehaviour, ISubject
 
 
 ># Card Button
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/e8dc2d56-7eef-42c7-973b-c1035e1194ac" width="40%" height="40%"/>
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b1adf08e-65d3-4ab1-b0bf-9e69facdecae" width="26.8%" height="26.8%"/>
-
 ```
 카드는 빈번하게 변화하기 때문에 정보를 데이터 형태로 가볍게 관리하도록 의도했습니다.
 
