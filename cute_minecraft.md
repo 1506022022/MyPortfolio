@@ -5,10 +5,6 @@
     <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
   </a>
 </p>
-  
-<div align="right">
-    <a href="https://youtu.be/sdgQF_41lS4">동영상으로 이동</a>
-</div>
 
 ># 목차
 - **[파이프 라인](#파이프-라인)**
