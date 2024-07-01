@@ -1,4 +1,4 @@
-# 큐트 마인크래프트(가칭)
+# 페이스(Face)
 
 <p align="right">  
   <a href="https://youtu.be/sdgQF_41lS4">
