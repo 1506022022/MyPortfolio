@@ -1,4 +1,4 @@
-# 게임 이름
+# 메이플 원카드 모작
 
 <p align="right">  
   <a href="https://youtu.be/FjVJnLojaAo">
