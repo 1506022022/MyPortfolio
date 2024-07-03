@@ -24,6 +24,7 @@
 |개발기간|2023.03.01 - 2023.09.30|
 |참여인원|4인|
 |개발환경|유니티, HTC VIVE Pro 2|
+|프로젝트 링크|<a href="https://github.com/1506022022/BartenderSimulation">프로젝트 링크</a>|
 
 ># 제출 공간
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/e8dc2d56-7eef-42c7-973b-c1035e1194ac" width="40%" height="40%"/>
