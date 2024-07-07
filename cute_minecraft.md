@@ -298,9 +298,8 @@ namespace PlatformGame
     {
         public UnityEvent<Item> OnInputItem;
         public UnityEvent<GameObject> OnOutputItem;
-        Dictionary<int, bool> mInputItems = new();
-        [SerializeField] List<Item> Recipe;
-        [SerializeField] GameObject ResultItem;
+        [SerializeField] List<QuestItem> mRecipe;
+        [SerializeField] GameObject mResultItem;
 
         public void OnHit(HitBoxCollision collision)
         {
@@ -315,29 +314,26 @@ namespace PlatformGame
 
         void Init()
         {
-            mInputItems.Clear();
-            foreach (var item in Recipe)
-            {
-                mInputItems.Add(item.ID, false);
-            }
+            mRecipe.ForEach(x => x.Count = 0);
         }
 
-        void InputItem(Item item)
+        void InputItem(Item input)
         {
-            if (!mInputItems.ContainsKey(item.ID))
+            var item = mRecipe.Find(x => x.Item.ID == input.ID);
+            if (item == null)
             {
                 return;
             }
 
-            if (mInputItems[item.ID])
+            if (item.IsFull)
             {
                 return;
             }
 
-            mInputItems[item.ID] = true;
-            OnInputItem.Invoke(item);
+            item.Count++;
+            OnInputItem.Invoke(input);
 
-            if (mInputItems.Any(x => x.Value == false))
+            if (mRecipe.Any(x => !x.IsFull))
             {
                 return;
             }
@@ -346,7 +342,7 @@ namespace PlatformGame
 
         void OutputItem()
         {
-            var obj = Instantiate(ResultItem);
+            var obj = Instantiate(mResultItem);
             OnOutputItem.Invoke(obj);
         }
 
