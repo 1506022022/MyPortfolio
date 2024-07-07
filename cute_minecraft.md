@@ -264,6 +264,7 @@
   ```
 ># **크래프팅**
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/3a8967ae-b4dd-4305-bd7a-7c461998ac54" width="30%" height="30%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
 
 ```
 이 기능을 만들 당시 세부적인 기획 내용을 전달받지 못한 상태에서 구현하다 보니 OCP를 준수하는 것에 어려움이 있었습니다.
