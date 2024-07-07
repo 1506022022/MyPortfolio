@@ -604,7 +604,7 @@ namespace PlatformGame
     }
 }
 ```
-># Item
+# Item
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
 
 ```
