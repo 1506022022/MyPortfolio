@@ -361,7 +361,26 @@ namespace PlatformGame.Character.Animation
   예를 들어 파괴 어빌리티의 경우에는 피격의 주체에게 적용되는 능력이지만,
   리버스 어빌리티에서는 캐스터에게 적용되는 능력으로 뒤바뀝니다.
   ```
+  ## 코드
+``` C#
+using UnityEngine;
 
+namespace PlatformGame.Character.Combat
+{
+    [CreateAssetMenu(menuName = "Custom/Ability/ReverseAbility")]
+    public class ReverseAbility : Ability
+    {
+        public Ability AbilityAction;
+
+        public override void UseAbility(AbilityCollision collision)
+        {
+            var abilityCollision = new AbilityCollision(collision.Victim, collision.Caster, collision.Ability);
+            AbilityAction.UseAbility(abilityCollision);
+        }
+
+    }
+}
+``` 
   ## Burn
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/89e30422-310b-41a1-9f7f-60024a9ee68e" width="40%" height="40%"/>
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b3af29c6-ec4f-42a9-80d1-b058518cb06c" width="365" height= "240"/>
