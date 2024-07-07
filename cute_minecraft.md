@@ -263,7 +263,7 @@
   예를 들어 물 블록의 경우에 이 옵션을 적용하면 블록을 통과해 이동할 수 있습니다.
   ```
 ># **크래프팅**
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/03396e72-1f50-449f-a5bc-e83ac2a90240" width="30%" height="30%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/3a8967ae-b4dd-4305-bd7a-7c461998ac54" width="30%" height="30%"/>
 
 ```
 이 기능을 만들 당시 세부적인 기획 내용을 전달받지 못한 상태에서 구현하다 보니 OCP를 준수하는 것에 어려움이 있었습니다.
