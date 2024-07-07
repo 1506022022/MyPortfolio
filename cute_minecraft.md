@@ -416,7 +416,8 @@ namespace PlatformGame
 
     public class Item : MonoBehaviour
     {
-        public int ID;
+        [SerializeField] int mID;
+        public int ID => mID;
     }
 
 }
