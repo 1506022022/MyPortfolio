@@ -263,7 +263,7 @@
   예를 들어 물 블록의 경우에 이 옵션을 적용하면 블록을 통과해 이동할 수 있습니다.
   ```
 ># **크래프팅**
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/a3320ea7-eec2-4c0b-a299-1ab1a83325bc" width="30%" height="30%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/77f41813-82b8-4d12-9258-9e91666e213a" width="30%" height="30%"/>
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
 
 ```
