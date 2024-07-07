@@ -29,6 +29,7 @@
   - **[Distructibility](#Distructibility)**
   - **[Premeability](#Premeability)**
 - **[크래프팅](#크래프팅)**
+  - **[Item](#Item)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -264,7 +265,6 @@
   ```
 ># **크래프팅**
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/83ba5ff9-5fab-430c-b88c-4ced9ef2909f" width="30%" height="30%"/>
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
 
 ```
  이 기능을 만들 당시 세부적인 기획 내용을 전달받지 못한 상태에서 구현하다 보니
@@ -372,5 +372,52 @@ namespace PlatformGame
         }
 
     }
+}
+```
+># Item
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
+
+```
+
+
+ 처음에는 하나의 재료당 한개, 재료끼리는 겹치지 않는다는 상황을 생각하고 작성하다 보니
+Dictionary 자료형을 사용해 아이템 ID와 소유 여부를 확인했지만 같은 재료를 여러개 요구하는
+레시피에 대해서도 고민하게 되었습니다.
+
+ Dictionary로는 복수의 재료를 관리하기 어렵다고 판단했지만, List를 사용하기에도 ID와 개수
+두 가지 정보를 관리하기에는 어려웠습니다. 때문에 해당 정보를 관리하는 새로운 클래스인 QueseItem
+을 추가하게 되었습니다.
+
+ Item은 최소한의 정보만을 담기 위해 고민했습니다. 크래프팅을 구현할 당시에는 아이템 끼리의 구분만
+가능하면 되었기에 ID값 하나만을 가지도록 했습니다.
+```
+  ## 코드
+``` C#
+using System;
+using UnityEngine;
+
+namespace PlatformGame
+{
+    [Serializable]
+    public class QuestItem
+    {
+        [SerializeField] Item mItem;
+        public Item Item => mItem;
+        [SerializeField] byte mRequiredCount;
+        public byte RequiredCount => mRequiredCount;
+        byte mCount;
+        public byte Count
+        {
+            get => mCount;
+            set => mCount = (byte)Mathf.Clamp(value, 0, 255);
+        }
+        public bool IsFull => mRequiredCount <= Count;
+    }
+
+    public class Item : MonoBehaviour
+    {
+        public int ID;
+    }
+
 }
 ```
