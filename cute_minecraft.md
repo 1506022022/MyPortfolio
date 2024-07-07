@@ -299,6 +299,7 @@ namespace PlatformGame
         public UnityEvent<Item> OnInputItem;
         public UnityEvent<GameObject> OnOutputItem;
         [SerializeField] List<QuestItem> mRecipe;
+        public List<QuestItem> Recipe => mRecipe.ToList();
         [SerializeField] GameObject mResultItem;
 
         public void OnHit(HitBoxCollision collision)
