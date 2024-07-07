@@ -28,6 +28,7 @@
   - **[Non static](#Non-Static)**
   - **[Distructibility](#Distructibility)**
   - **[Premeability](#Premeability)**
+- **[크래프팅](#크래프팅)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -261,3 +262,100 @@
 
   예를 들어 물 블록의 경우에 이 옵션을 적용하면 블록을 통과해 이동할 수 있습니다.
   ```
+># **크래프팅**
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/03396e72-1f50-449f-a5bc-e83ac2a90240" width="30%" height="30%"/>
+
+```
+이 기능을 만들 당시 세부적인 기획 내용을 전달받지 못한 상태에서 구현하다 보니 OCP를 준수하는 것에 어려움이 있었습니다.
+그래서 기획에서 확실한 내용과 모호한 내용을 정리하는 것에 집중했습니다.
+
+확실한 내용 :  레시피에 있는 재료를 모두 입력받으면 결과물을 반환한다.
+모호한 내용 :  재료를 입력받았을때의 리액션, 결과물이 반환됐을 때의 리액션.
+
+전체적인 틀은 변하지 않아야 하기 때문에 '확실한 내용'을 기반으로 설계하고,
+'모호한 내용'을 구현하는 것은 유연해야 하기 때문에 이벤트를 사용해서 구현했습니다.
+
+또한 크래프팅은 다양한 게임에 포함되는 내용이다 보니 모듈화 하여 구현하고 싶었습니다.
+
+이 부분에서 문제가 되었던 부분이, 이 게임에서는 결과물을 반환하는 과정에서
+크래프팅을 행한 '주체'를 알아야 한단 부분이었습니다.
+하지만 '주체'는 이 게임에서만 존재하는 Character 클래스였기에 모듈화에 문제가 발생했습니다.
+
+이러한 문제를 해결하기 위해 크래프팅의 '주체'에게 결과물을 직접 반환하는 것이 아닌
+간접적으로 반환하여 '주체'로 하여금 습득하게 하는 방식으로 기획 방향을 수정하도록 건의했습니다.
+```
+  ## 코드
+``` C#
+using PlatformGame.Character.Collision;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace PlatformGame
+{
+    public class Recipe : MonoBehaviour
+    {
+        public UnityEvent<Item> OnInputItem;
+        public UnityEvent<GameObject> OnOutputItem;
+        Dictionary<int, bool> mCollectionMap = new();
+        [SerializeField] List<Item> mIngredientItems;
+        [SerializeField] GameObject ResultItem;
+
+        public void OnHit(HitBoxCollision collision)
+        {
+            var item = collision.Attacker.GetComponent<Item>();
+            if (!item)
+            {
+                return;
+            }
+
+            InputItem(item);
+        }
+
+        void Init()
+        {
+            mCollectionMap.Clear();
+            foreach (var item in mIngredientItems)
+            {
+                mCollectionMap.Add(item.ID, false);
+            }
+        }
+
+        void InputItem(Item item)
+        {
+            if (!mCollectionMap.ContainsKey(item.ID))
+            {
+                return;
+            }
+
+            if (mCollectionMap[item.ID])
+            {
+                return;
+            }
+
+            mCollectionMap[item.ID] = true;
+            OnInputItem.Invoke(item);
+
+            if (mCollectionMap.Any(x => x.Value == false))
+            {
+                return;
+            }
+            OutputItem();
+        }
+
+        void OutputItem()
+        {
+            var obj = Instantiate(ResultItem);
+            OnOutputItem.Invoke(obj);
+        }
+
+        void Awake()
+        {
+            Init();
+            OnInputItem.AddListener(InputItem);
+        }
+
+    }
+}
+```
