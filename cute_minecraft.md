@@ -237,6 +237,37 @@ namespace PlatformGame.Character.Collision
 예를 들어 어택 로그는 어빌리티를 발동한 캐스터와 피격의 주체,
 그리고 발동된 어빌리티에 대한 정보를 전달받아 기록합니다.
 ```
+  ## 코드
+``` C#
+using PlatformGame.Character.Collision;
+using PlatformGame.Pipeline;
+using UnityEngine;
+
+namespace PlatformGame.Character.Combat
+{
+    public abstract class Ability : ScriptableObject
+    {
+        Pipeline<AbilityCollision> mPipeline;
+
+        public void DoActivation(HitBoxCollision collision)
+        {
+            CreatePipeline();
+            var caster = collision.Subject.Actor;
+            var victim = collision.Victim == caster ? collision.Attacker : collision.Victim;
+            var abilityCollision = new AbilityCollision(caster, victim, this);
+            mPipeline.Invoke(abilityCollision);
+        }
+
+        public abstract void UseAbility(AbilityCollision collision);
+
+        void CreatePipeline()
+        {
+            mPipeline = Pipelines.Instance.AbilityPipeline;
+            mPipeline.InsertPipe((collision) => UseAbility(collision));
+        }
+    }
+}
+``` 
   ## 애니메이션
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b5ddf6cf-6f2b-4741-86fb-8d01ab2bc7c4" width="30%" height="30%"/>
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/928537d2-581a-4ab7-9321-846e1a31bc1c" width="30%" height="30%"/>
