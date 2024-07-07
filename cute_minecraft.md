@@ -263,7 +263,7 @@
   예를 들어 물 블록의 경우에 이 옵션을 적용하면 블록을 통과해 이동할 수 있습니다.
   ```
 ># **크래프팅**
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/3a8967ae-b4dd-4305-bd7a-7c461998ac54" width="30%" height="30%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b5a20e83-f502-4fe8-b079-040ee7891d74" width="30%" height="30%"/>
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
 
 ```
@@ -295,12 +295,12 @@ using UnityEngine.Events;
 
 namespace PlatformGame
 {
-    public class Recipe : MonoBehaviour
+    public class Crafting : MonoBehaviour
     {
         public UnityEvent<Item> OnInputItem;
         public UnityEvent<GameObject> OnOutputItem;
-        Dictionary<int, bool> mCollectionMap = new();
-        [SerializeField] List<Item> mIngredientItems;
+        Dictionary<int, bool> mInputItems = new();
+        [SerializeField] List<Item> Recipe;
         [SerializeField] GameObject ResultItem;
 
         public void OnHit(HitBoxCollision collision)
@@ -316,29 +316,29 @@ namespace PlatformGame
 
         void Init()
         {
-            mCollectionMap.Clear();
-            foreach (var item in mIngredientItems)
+            mInputItems.Clear();
+            foreach (var item in Recipe)
             {
-                mCollectionMap.Add(item.ID, false);
+                mInputItems.Add(item.ID, false);
             }
         }
 
         void InputItem(Item item)
         {
-            if (!mCollectionMap.ContainsKey(item.ID))
+            if (!mInputItems.ContainsKey(item.ID))
             {
                 return;
             }
 
-            if (mCollectionMap[item.ID])
+            if (mInputItems[item.ID])
             {
                 return;
             }
 
-            mCollectionMap[item.ID] = true;
+            mInputItems[item.ID] = true;
             OnInputItem.Invoke(item);
 
-            if (mCollectionMap.Any(x => x.Value == false))
+            if (mInputItems.Any(x => x.Value == false))
             {
                 return;
             }
