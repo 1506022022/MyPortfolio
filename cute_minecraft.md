@@ -673,7 +673,7 @@ namespace PlatformGame
 }
 ```
 ># **포메이션**
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/83ba5ff9-5fab-430c-b88c-4ced9ef2909f" width="30%" height="30%"/>
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/94d0e3cf-cdc5-4b5c-b951-a686f0e658b9" width="30%" height="30%"/>
 
 ```
  이 코드를 작성하면서 의지와 행동의 분리, 이벤트 기반의 코드. 두 가지에 집중했습니다. 의지와 행동의
