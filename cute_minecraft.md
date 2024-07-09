@@ -671,3 +671,59 @@ namespace PlatformGame
 
 }
 ```
+># **포메이션**
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/83ba5ff9-5fab-430c-b88c-4ced9ef2909f" width="30%" height="30%"/>
+
+```
+ 이 코드를 작성하면서 의지와 행동의 분리, 이벤트 기반의 코드. 두 가지에 집중했습니다. 의지와 행동의
+범위를 결정하는 과정에서 어려움을 겪었는데, 포메이션에 변동이 생기면 알려주는 OnChangeFormation의
+호출을 자식에게 맡겨야 했기 때문입니다.
+
+포메이션을 변경하는 행동은 자식이 구현하고 있기 때문에 부모에서는 변동을 확인할 방도가 없었습니다. 포메이션을
+변경하도록 의사를 결정하는 또 다른 클래스에서 OnChangeFormation을 호출해줄까도 고민해 봤지만 지나친 커플링인
+것 같았습니다.
+```
+  ## 코드
+``` C#
+using UnityEngine.Events;
+using UnityEngine;
+
+public abstract class BaseRole : MonoBehaviour
+{
+    protected UnityEvent OnReachFormationEvent;
+    protected UnityEvent OnStopMoveEvent;
+    protected UnityEvent OnChangeFormationEvent;
+
+    protected abstract void MoveToFormation();
+    protected abstract bool IsReachFormation();
+
+    protected void UpdateBehaviour()
+    {
+        if (IsReachFormation())
+        {
+            OnReachFormation();
+            return;
+        }
+
+        MoveToFormation();
+    }
+
+    protected void OnChangeFormation()
+    {
+        OnStopMove();
+        OnChangeFormationEvent.Invoke();
+    }
+
+    void OnReachFormation()
+    {
+        OnStopMove();
+        OnReachFormationEvent.Invoke();
+    }
+
+    void OnStopMove()
+    {
+        OnStopMoveEvent.Invoke();
+    }
+
+}
+```
