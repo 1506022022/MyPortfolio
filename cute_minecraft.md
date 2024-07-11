@@ -1,5 +1,3 @@
-![image](https://github.com/1506022022/MyPortfolio/assets/88864717/3d56f6df-420e-45d7-b705-c3e4e217c6ea)# 페이스(Face)
-
 <p align="right">  
   <a href="https://youtu.be/sdgQF_41lS4">
     <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
