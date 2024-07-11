@@ -1,4 +1,4 @@
-# 페이스(Face)
+![image](https://github.com/1506022022/MyPortfolio/assets/88864717/3d56f6df-420e-45d7-b705-c3e4e217c6ea)# 페이스(Face)
 
 <p align="right">  
   <a href="https://youtu.be/sdgQF_41lS4">
@@ -11,6 +11,8 @@
   - **[플로우](#플로우)**
   - **[히트 박스 파이프라인](#히트-박스-파이프라인)**
   - **[어빌리티 파이프라인](#어빌리티-파이프라인)**
+- **[포메이션](#포메이션)**
+  - **[Role](#Role)**
 - **[애니메이션](#애니메이션)**
 - **[어빌리티](#어빌리티)**
   - **[리버스 어빌리티](#리버스-어빌리티)**   
@@ -30,7 +32,6 @@
   - **[Premeability](#Premeability)**
 - **[크래프팅](#크래프팅)**
   - **[Item](#Item)**
-- **[포메이션](#포메이션)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -268,7 +269,141 @@ namespace PlatformGame.Character.Combat
         }
     }
 }
-``` 
+```
+># **포메이션**
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/94d0e3cf-cdc5-4b5c-b951-a686f0e658b9" width="30%" height="30%"/>
+
+```
+ 포메이션을 설계하면서 축구에 빗대어 고민했습니다. 감독의 지시에 따라 포메이션 자체가 바뀔 수도 있고
+수비수, 공격수 등 역할에 따라 다르게 행동하는 것이 자연스러웠습니다. 이런 구조를 유연하게 구현하기 위해
+감독의 의지와 플레이어의 행동으로 구분 지어 생각해 봤습니다.
+
+ 포메이션에서는 의지만을 나타내기 위해 행동을 구현하지 않도록 고민했고, 이벤트를 활용해서 Role 클래스에
+행동을 위임했습니다. 플레이어가 감독이 지시한 위치에 도달했는지, 서 있는 상태인지 판단하는 부분이
+IsReached, IsStoped인데 판단도 하나의 행동이라고 생각해 Role 클래스에 위임할 수 있도록 대리자를
+사용했습니다.
+
+ 대부분의 행동을 Role 클래스에 위임했지만, 플레이어가 달리기 시작한다, 멈춘다, 도착했다, 포지션이
+바뀌었다는 것과 같은 상황에 대해서는 작업의 편리성을 위해 UnityEvent를 통해 인스펙터에서 조작할 수 있도록
+Serializable 특성을 통해 직렬화했습니다.
+```
+  ## 코드
+``` C#
+    [Serializable]
+    public class Formation
+    {
+        Transform mPosition;
+        public Transform Position
+        {
+            get => mPosition;
+            set
+            {
+                mPosition = value;
+                OnChangeFormation();
+            }
+        }
+        public UnityAction Trace;
+        public Func<bool> IsStoped;
+        public Func<bool> IsReached;
+        public UnityEvent OnReachFormationEvent;
+        public UnityEvent OnChangeFormationEvent;
+        public UnityEvent OnStopMoveEvent;
+        public UnityEvent OnStartMoveEvent;
+
+        public void UpdateBehaviour()
+        {
+            if (IsReached() && !IsStoped())
+            {
+                OnReachFormation();
+                return;
+            }
+
+            if (IsStoped() && !IsReached())
+            {
+                OnMoveToFormation();
+            }
+        }
+
+        void OnReachFormation()
+        {
+            OnStopMove();
+            OnReachFormationEvent.Invoke();
+        }
+
+        void OnChangeFormation()
+        {
+            OnStopMove();
+            OnChangeFormationEvent.Invoke();
+        }
+
+        void OnStopMove()
+        {
+            OnStopMoveEvent.Invoke();
+        }
+
+        void OnStartMove()
+        {
+            OnStartMoveEvent.Invoke();
+        }
+
+        void OnMoveToFormation()
+        {
+            Trace.Invoke();
+            OnStartMove();
+        }
+
+    }
+```
+  ## Role
+```
+ 축구에서 플레이어와 같은 Role은 포메이션으로부터 위임받은 행동을 수행하는 클래스입니다. 현재의 위치에서
+지정된 포메이션의 위치로 이동하는 하나의 행동을 담당하고 있습니다. 축구에서 플레이어가 이동하는 방식은
+사람마다 다를 수 있습니다. 뛰어서 이동하거나 슬라이딩해서 이동할 수도 있습니다. 이렇듯 다양한 이동을 처리
+하기 위해 움직임을 담당하는 MovementTransform 클래스에 위임했습니다.
+```
+  ## 코드
+``` C#
+ public class Role : MonoBehaviour
+ {
+     bool mbStop;
+     [SerializeField] Formation mFormation;
+     [SerializeField] MovementTransform mTrace;
+     [SerializeField] Transform mPosition;
+
+     void Awake()
+     {
+         mFormation.Trace = TraceFormation;
+         mFormation.Position = mPosition;
+         mFormation.IsStoped = () => mbStop;
+         mFormation.IsReached = () => IsNearByDistance(transform.position, mPosition.position);
+         mFormation.OnStopMoveEvent.AddListener(StopTrace);
+         mFormation.OnStartMoveEvent.AddListener(StartTrace);
+     }
+
+     void TraceFormation()
+     {
+         StopAllCoroutines();
+         StartCoroutine(mTrace.Move(transform, mPosition, true));
+     }
+
+     void Update()
+     {
+         mFormation.UpdateBehaviour();
+     }
+
+     void StopTrace()
+     {
+         mbStop = true;
+     }
+
+     void StartTrace()
+     {
+         mbStop = false;
+     }
+
+ }
+```
+
   ## 애니메이션
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b5ddf6cf-6f2b-4741-86fb-8d01ab2bc7c4" width="30%" height="30%"/>
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/928537d2-581a-4ab7-9321-846e1a31bc1c" width="30%" height="30%"/>
@@ -668,64 +803,6 @@ namespace PlatformGame
     {
         [SerializeField] int mID;
         public int ID => mID;
-    }
-
-}
-```
-># **포메이션**
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/94d0e3cf-cdc5-4b5c-b951-a686f0e658b9" width="30%" height="30%"/>
-
-```
- 이 코드를 작성하면서 의지와 행동의 분리, 이벤트 기반의 코드. 두 가지에 집중했습니다. 의지와 행동의
-범위를 결정하는 과정에서 어려움을 겪었는데, 포메이션에 변동이 생기면 알려주는 OnChangeFormation의
-호출을 자식에게 맡겨야 했기 때문입니다.
-
-포메이션을 변경하는 행동은 자식이 구현하고 있기 때문에 부모에서는 변동을 확인할 방도가 없었습니다. 포메이션을
-변경하도록 의사를 결정하는 또 다른 클래스에서 OnChangeFormation을 호출해줄까도 고민해 봤지만 지나친 커플링인
-것 같았습니다.
-
-결과적으로 자식에게 OnChangeFormation의 호출을 의존하는 구조가 되었습니다.
-```
-  ## 코드
-``` C#
-using UnityEngine.Events;
-using UnityEngine;
-
-public abstract class BaseRole : MonoBehaviour
-{
-    protected UnityEvent OnReachFormationEvent;
-    protected UnityEvent OnStopMoveEvent;
-    protected UnityEvent OnChangeFormationEvent;
-
-    protected abstract void MoveToFormation();
-    protected abstract bool IsReachFormation();
-
-    protected void UpdateBehaviour()
-    {
-        if (IsReachFormation())
-        {
-            OnReachFormation();
-            return;
-        }
-
-        MoveToFormation();
-    }
-
-    protected void OnChangeFormation()
-    {
-        OnStopMove();
-        OnChangeFormationEvent.Invoke();
-    }
-
-    void OnReachFormation()
-    {
-        OnStopMove();
-        OnReachFormationEvent.Invoke();
-    }
-
-    void OnStopMove()
-    {
-        OnStopMoveEvent.Invoke();
     }
 
 }
