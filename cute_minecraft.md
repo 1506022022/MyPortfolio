@@ -383,11 +383,6 @@ Serializable 특성을 통해 직렬화했습니다.
          StartCoroutine(mTrace.Move(transform, mPosition, true));
      }
 
-     void Update()
-     {
-         mFormation.UpdateBehaviour();
-     }
-
      void StopTrace()
      {
          mbStop = true;
@@ -396,6 +391,16 @@ Serializable 특성을 통해 직렬화했습니다.
      void StartTrace()
      {
          mbStop = false;
+     }
+
+     void Update()
+     {
+         mFormation.UpdateBehaviour();
+     }
+
+     void Start()
+     {
+         StopTrace();
      }
 
  }
