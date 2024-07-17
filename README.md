@@ -3,6 +3,7 @@
 
 |개요|내용|
 |---|---|
+|이름|페이스|
 |장르|3D 퍼즐 액션|
 |개발기간|2024.05.01 - (진행중)|
 |참여인원|3인|
@@ -13,16 +14,18 @@
 
 |개요|내용|
 |---|---|
+|이름|바텐더 시뮬레이션|
 |장르|VR 시뮬레이션|
 |개발기간|2023.03.01 - 2023.09.30|
 |참여인원|4인|
 |개발환경|유니티, HTC VIVE Pro 2|
-|링크|<a href="https://github.com/1506022022/MyPortfolio/blob/main/Bartender.md">바로가</a>|
+|링크|<a href="https://github.com/1506022022/MyPortfolio/blob/main/Bartender.md">바로가기</a>|
 <img src="https://github.com/1506022022/BartenderSimulation/assets/88864717/5f5bdec3-15f9-49c8-83fb-764ea4aee77f.png" width="50%" height="50%"/>
 <hr>
 
 |개요|내용|
 |---|---|
+|이름|메이플 원카드 모작|
 |장르|턴제 카드게임|
 |개발기간|2022.08.09 - 2022.08.16|
 |참여인원|1인|
