@@ -1,4 +1,6 @@
 ># 포트폴리오
+<hr>
+
 |개요|내용|
 |---|---|
 |장르|3D 퍼즐 액션|
@@ -6,6 +8,8 @@
 |참여인원|3인|
 |개발환경|유니티|
 |프로젝트 링크|<a href="https://github.com/CREDOCsGames/cute_minecraft">프로젝트 링크</a>|
+<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="30%" height="30%"/>
+<hr>
 
 |개요|내용|
 |---|---|
@@ -14,6 +18,8 @@
 |참여인원|4인|
 |개발환경|유니티, HTC VIVE Pro 2|
 |프로젝트 링크|<a href="https://github.com/1506022022/BartenderSimulation">프로젝트 링크</a>|
+<img src="https://github.com/1506022022/BartenderSimulation/assets/88864717/5f5bdec3-15f9-49c8-83fb-764ea4aee77f.png" width="50%" height="50%"/>
+<hr>
 
 |개요|내용|
 |---|---|
@@ -22,3 +28,5 @@
 |참여인원|1인|
 |개발환경|Unity|
 |프로젝트 링크|<a href="https://github.com/1506022022/MapleOnecard_Copy">프로젝트 링크</a>|
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/6358a717-736b-446b-90bb-528106250da7" width="50%" height="50%"/>
+<hr>
