@@ -6,7 +6,7 @@
 |장르|3D 퍼즐 액션|
 |개발기간|2024.05.01 - (진행중)|
 |참여인원|3인|
-|개발환경|유니티|
+|개발환경|Unity|
 |프로젝트 링크|<a href="https://github.com/CREDOCsGames/cute_minecraft">프로젝트 링크</a>|
 <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="30%" height="30%"/>
 <hr>
