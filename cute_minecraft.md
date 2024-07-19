@@ -550,42 +550,42 @@ namespace PlatformGame
         public event Action<Timer> OnTimeoutEvent;
         public event Action<Timer> OnTickEvent;
 
-        SyncBool mbPause;
+        SyncBool mbPause = new();
         public bool IsPause
         {
             get => mbPause.Value;
             private set => mbPause.Value = value;
         }
 
-        SyncBool mbStart;
+        SyncBool mbStart = new();
         public bool IsStart
         {
-            get => mbStart;
+            get => mbStart.Value;
             private set => mbStart.Value = value;
         }
 
-        SyncFloat mTimeout;
+        SyncFloat mTimeout = new();
         public float Timeout
         {
             get => mTimeout.Value;
             private set => mTimeout.Value = value;
         }
 
-        SyncFloat mElapsedTime;
+        SyncFloat mElapsedTime = new();
         public float ElapsedTime
         {
             get => mElapsedTime.Value;
             private set => mElapsedTime.Value = value;
         }
 
-        SyncFloat mLastPauseTime;
+        SyncFloat mLastPauseTime = new();
         public float LastPauseTime
         {
             get => mLastPauseTime.Value;
             private set => mLastPauseTime.Value = value;
         }
 
-        SyncFloat mLastTickTime;
+        SyncFloat mLastTickTime = new();
         float LastTickTime
         {
             get => mLastTickTime.Value;
@@ -603,6 +603,7 @@ namespace PlatformGame
 
             IsStart = true;
             IsPause = false;
+            ElapsedTime = 0f;
             LastTickTime = ServerTime;
             OnStartEvent?.Invoke(this);
         }
