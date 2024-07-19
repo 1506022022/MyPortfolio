@@ -417,6 +417,13 @@ Serializable 특성을 통해 직렬화했습니다.
 
 타이머는 시간을 재는 단순한 기능만을 가지고 있지만, 이벤트의 활용도가 매우 높다고 생각합니다.
 때문에 외부에서 필요한 이벤트에 기능을 연결할 수 있도록 설계해 보았습니다.
+
+// + 추가
+서버 - 클라이언트 구조에서 고민해 보았는데, 클라이언트에서 시간을 관리하면 유저가 크랙해 버릴 수 있다는 위협이 있었습니다.
+그래서 클라이언트가 서버에 시간을 요청해서 이벤트를 실행하도록 수정했습니다.
+
+서버에 데이터를 요청하는 기능은 Sync 변수에 위임해서 Timer 클래스 내에서는 기존의 기능에 집중할 수 있도록 하였습니다.
+
 ```
   ## 코드 (TimerComponent)
 ``` C#
@@ -440,7 +447,6 @@ namespace PlatformGame
         public float Timeout => mTimer.Timeout;
         public float ElapsedTime => mTimer.ElapsedTime;
         public float LastPauseTime => mTimer.LastPauseTime;
-        public float LastTickTime => mTimer.LastTickTime;
 
         Timer mTimer = new();
         float mElapsedTime;
@@ -524,6 +530,7 @@ namespace PlatformGame
 ``` 
   ## 코드 (Timer)
 ``` C#
+using PlatformGame.Server;
 using System;
 using UnityEngine;
 
@@ -538,101 +545,125 @@ namespace PlatformGame
         public event Action<Timer> OnTimeoutEvent;
         public event Action<Timer> OnTickEvent;
 
-        bool mbPause;
-        public bool IsPause => mbPause;
+        SyncBool mbPause;
+        public bool IsPause
+        {
+            get => mbPause.Value;
+            private set => mbPause.Value = value;
+        }
 
-        bool mbStart;
-        public bool IsStart => mbStart;
+        SyncBool mbStart;
+        public bool IsStart
+        {
+            get => mbStart;
+            private set => mbStart.Value = value;
+        }
 
-        float mTimeout;
-        public float Timeout => mTimeout;
+        SyncFloat mTimeout;
+        public float Timeout
+        {
+            get => mTimeout.Value;
+            private set => mTimeout.Value = value;
+        }
 
-        float mLastTickTime;
-        public float LastTickTime => mLastTickTime;
+        SyncFloat mElapsedTime;
+        public float ElapsedTime
+        {
+            get => mElapsedTime.Value;
+            private set => mElapsedTime.Value = value;
+        }
 
-        float mLastPauseTime;
-        public float LastPauseTime => mLastPauseTime;
+        SyncFloat mLastPauseTime;
+        public float LastPauseTime
+        {
+            get => mLastPauseTime.Value;
+            private set => mLastPauseTime.Value = value;
+        }
 
-        float mElapsedTime;
-        public float ElapsedTime => mElapsedTime;
+        SyncFloat mLastTickTime;
+        float LastTickTime
+        {
+            get => mLastTickTime.Value;
+            set => mLastTickTime.Value = value;
+        }
+
+        float ServerTime => ServerTimer.Time;
 
         public void Start()
         {
-            if (mbStart)
+            if (IsStart)
             {
                 return;
             }
 
-            mbStart = true;
-            mbPause = false;
-            mElapsedTime = 0f;
-            mLastPauseTime = 0f;
-            mLastTickTime = Time.time;
-            OnStartEvent.Invoke(this);
+            IsStart = true;
+            IsPause = false;
+            LastTickTime = ServerTime;
+            OnStartEvent?.Invoke(this);
         }
 
         public void Stop()
         {
-            if (mbStart == false)
+            if (IsStart == false)
             {
                 return;
             }
 
-            mbStart = false;
-            OnStopEvent.Invoke(this);
+            IsStart = false;
+            OnStopEvent?.Invoke(this);
         }
 
         public void Pause()
         {
-            if (mbPause)
+            if (IsPause)
             {
                 return;
             }
 
-            mbPause = true;
-            mLastPauseTime = Time.time;
-            OnPauseEvent.Invoke(this);
+            IsPause = true;
+            LastPauseTime = ServerTime;
+            OnPauseEvent?.Invoke(this);
         }
 
         public void Resume()
         {
-            if (!mbPause)
+            if (!IsPause)
             {
                 return;
             }
 
-            mbPause = false;
-            OnResumeEvent.Invoke(this);
+            IsPause = false;
+            OnResumeEvent?.Invoke(this);
         }
 
         public void SetTimeout(float timeout)
         {
             Debug.Assert(0 < timeout, $"The timeout({timeout}) must be greater than 0 seconds.");
-            mTimeout = timeout;
+            Timeout = timeout;
         }
 
         public void RemoveTimeout()
         {
-            mTimeout = 0f;
+            Timeout = 0f;
         }
 
         public void Tick()
         {
-            if (!mbStart || mbPause)
+            if (!IsStart || IsPause)
             {
                 return;
             }
 
-            mElapsedTime += Time.time - mLastTickTime;
-            mLastTickTime = Time.time;
-            OnTickEvent.Invoke(this);
+            ElapsedTime += (ServerTime - LastTickTime) - Mathf.Max((LastPauseTime - LastTickTime), 0);
+            LastTickTime = ServerTime;
+            OnTickEvent?.Invoke(this);
 
             if (Timeout == 0)
             {
                 return;
             }
 
-            if (mTimeout < mElapsedTime)
+            if (Timeout < ElapsedTime)
             {
                 DoTimeout();
             }
@@ -640,8 +671,8 @@ namespace PlatformGame
 
         void DoTimeout()
         {
-            mbStart = false;
-            OnTimeoutEvent.Invoke(this);
+            IsStart = false;
+            OnTimeoutEvent?.Invoke(this);
         }
 
     }
