@@ -11,6 +11,7 @@
   - **[어빌리티 파이프라인](#어빌리티-파이프라인)**
 - **[포메이션](#포메이션)**
   - **[Role](#Role)**
+- **[타이머](#타이머)**
 - **[애니메이션](#애니메이션)**
 - **[어빌리티](#어빌리티)**
   - **[리버스 어빌리티](#리버스-어빌리티)**   
@@ -404,6 +405,247 @@ Serializable 특성을 통해 직렬화했습니다.
      }
 
  }
+```
+
+  ## 타이머
+<img src="https://github.com/user-attachments/assets/1e6e2390-2ede-4452-86e4-01784c0a71ee" width="30%" height="30%"/>
+
+```
+타이머 클래스는 MonoBehaviour를 상속받은 TimerComponent와, Timer class로 구현하였습니다.
+처음에는 TimerComponent 하나만 구현하려고 했었는데 아무래도 Timer는 여러 클래스에서 사용하는
+기능이다 보니 분리하게 되었습니다.
+
+타이머는 시간을 재는 단순한 기능만을 가지고 있지만, 이벤트의 활용도가 매우 높다고 생각합니다.
+때문에 외부에서 필요한 이벤트에 기능을 연결할 수 있도록 설계해 보았습니다.
+```
+  ## 코드 (TimerComponent)
+``` C#
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace PlatformGame
+{
+
+    public class TimerComponent : MonoBehaviour
+    {
+        public UnityEvent<TimerComponent> OnStartTimer;
+        public UnityEvent<TimerComponent> OnStopTimer;
+        public UnityEvent<TimerComponent> OnPauseTimer;
+        public UnityEvent<TimerComponent> OnResumeTimer;
+        public UnityEvent<TimerComponent> OnTick;
+        public UnityEvent<TimerComponent> OnTimeout;
+
+        public bool IsStart => mTimer.IsStart;
+        public bool IsPause => mTimer.IsPause;
+        public float Timeout => mTimer.Timeout;
+        public float ElapsedTime => mTimer.ElapsedTime;
+        public float LastPauseTime => mTimer.LastPauseTime;
+        public float LastTickTime => mTimer.LastTickTime;
+
+        Timer mTimer = new();
+        float mElapsedTime;
+
+        [Header("Options")]
+        [SerializeField] float mTimeout;
+        [SerializeField] bool mbPlayOnAwake = true;
+
+#if DEVELOPMENT
+        [Header("Debug")]
+        [SerializeField] bool mUseDebug;
+        [SerializeField] string mTimeoutKey;
+#endif
+
+        public void Initialize(float maxTimerTim)
+        {
+            mTimer.SetTimeout(maxTimerTim);
+            mTimer.Stop();
+        }
+
+        public void StartTimer()
+        {
+            mTimer.Start();
+        }
+
+        public void PauseTimer()
+        {
+            mTimer.Pause();
+        }
+
+        public void ResumeTimer()
+        {
+            mTimer.Resume();
+        }
+
+        public void StopTimer()
+        {
+            mTimer.Stop();
+        }
+
+        void Update()
+        {
+            mTimer.Tick();
+#if DEVELOPMENT
+            if (UnityEngine.Input.GetKeyDown(mTimeoutKey))
+            {
+                DebugTimeout();
+            }
+#endif
+        }
+
+        void Awake()
+        {
+            mTimer.OnPauseEvent += (t) => OnPauseTimer.Invoke(this);
+            mTimer.OnResumeEvent += (t) => OnResumeTimer.Invoke(this);
+            mTimer.OnStartEvent += (t) => OnStartTimer.Invoke(this);
+            mTimer.OnStopEvent += (t) => OnStopTimer.Invoke(this);
+            mTimer.OnTickEvent += (t) => OnTick.Invoke(this);
+            mTimer.OnTimeoutEvent += (t) => OnTimeout.Invoke(this);
+        }
+
+        void Start()
+        {
+            if (mbPlayOnAwake)
+            {
+                StartTimer();
+            }
+        }
+
+#if DEVELOPMENT
+        void DebugTimeout()
+        {
+            mElapsedTime = mTimeout < 5 ? mElapsedTime
+                                                : mTimeout - 5f;
+        }
+#endif
+
+    }
+}
+
+``` 
+  ## 코드 (Timer)
+``` C#
+using System;
+using UnityEngine;
+
+namespace PlatformGame
+{
+    public class Timer
+    {
+        public event Action<Timer> OnStartEvent;
+        public event Action<Timer> OnStopEvent;
+        public event Action<Timer> OnPauseEvent;
+        public event Action<Timer> OnResumeEvent;
+        public event Action<Timer> OnTimeoutEvent;
+        public event Action<Timer> OnTickEvent;
+
+        bool mbPause;
+        public bool IsPause => mbPause;
+
+        bool mbStart;
+        public bool IsStart => mbStart;
+
+        float mTimeout;
+        public float Timeout => mTimeout;
+
+        float mLastTickTime;
+        public float LastTickTime => mLastTickTime;
+
+        float mLastPauseTime;
+        public float LastPauseTime => mLastPauseTime;
+
+        float mElapsedTime;
+        public float ElapsedTime => mElapsedTime;
+
+        public void Start()
+        {
+            if (mbStart)
+            {
+                return;
+            }
+
+            mbStart = true;
+            mbPause = false;
+            mElapsedTime = 0f;
+            mLastPauseTime = 0f;
+            mLastTickTime = Time.time;
+            OnStartEvent.Invoke(this);
+        }
+
+        public void Stop()
+        {
+            if (mbStart == false)
+            {
+                return;
+            }
+
+            mbStart = false;
+            OnStopEvent.Invoke(this);
+        }
+
+        public void Pause()
+        {
+            if (mbPause)
+            {
+                return;
+            }
+
+            mbPause = true;
+            mLastPauseTime = Time.time;
+            OnPauseEvent.Invoke(this);
+        }
+
+        public void Resume()
+        {
+            if (!mbPause)
+            {
+                return;
+            }
+
+            mbPause = false;
+            OnResumeEvent.Invoke(this);
+        }
+
+        public void SetTimeout(float timeout)
+        {
+            Debug.Assert(0 < timeout, $"The timeout({timeout}) must be greater than 0 seconds.");
+            mTimeout = timeout;
+        }
+
+        public void RemoveTimeout()
+        {
+            mTimeout = 0f;
+        }
+
+        public void Tick()
+        {
+            if (!mbStart || mbPause)
+            {
+                return;
+            }
+
+            mElapsedTime += Time.time - mLastTickTime;
+            mLastTickTime = Time.time;
+            OnTickEvent.Invoke(this);
+
+            if (Timeout == 0)
+            {
+                return;
+            }
+
+            if (mTimeout < mElapsedTime)
+            {
+                DoTimeout();
+            }
+        }
+
+        void DoTimeout()
+        {
+            mbStart = false;
+            OnTimeoutEvent.Invoke(this);
+        }
+
+    }
+}
 ```
 
   ## 애니메이션
