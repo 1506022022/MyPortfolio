@@ -418,17 +418,6 @@ Serializable 특성을 통해 직렬화했습니다.
 타이머는 시간을 재는 단순한 기능만을 가지고 있지만, 이벤트의 활용도가 매우 높다고 생각합니다.
 때문에 외부에서 필요한 이벤트에 기능을 연결할 수 있도록 설계해 보았습니다.
 
-서버 - 클라이언트 구조에서 고민해 보았는데, 클라이언트에서 시간을 관리하면 유저가 크랙해 버릴 수 있다는 위협이 있었습니다.
-
-때문에 디바이스 타임 방식 -> 서버 타임을 요청하는 식으로 개선해보았습니다.
-더해서 메모리 크랙 등의 보안을 생각하다 보니 주요 변수들을 서버가 가지게 되었습니다.
-최대한 서버의 처리를 줄이고 싶었지만 어중간하게 막을 바에는 전부 막자는 생각으로 수정했습니다.
-
-최적화는 월드나 스테이지 단위로 배치되는 타이머 오브젝트의 라이프 사이클로 관리하게 될 것 같습니다.
-
-서버와 통신해서 동기화하는 부분은 저희 게임이 아직은 싱글 플레이인 관계로 임시의 Sync 변수를 만들어서 위임했습니다.
-동기화는 맡기고 타이머의 구현에 집중하는 코드를 유지하기 위해서입니다.
-
 ```
   ## 코드 (TimerComponent)
 ``` C#
@@ -535,7 +524,6 @@ namespace PlatformGame
 ``` 
   ## 코드 (Timer)
 ``` C#
-using PlatformGame.Server;
 using System;
 using UnityEngine;
 
@@ -550,49 +538,49 @@ namespace PlatformGame
         public event Action<Timer> OnTimeoutEvent;
         public event Action<Timer> OnTickEvent;
 
-        SyncBool mbPause = new();
+        bool mbPause = new();
         public bool IsPause
         {
-            get => mbPause.Value;
-            private set => mbPause.Value = value;
+            get => mbPause;
+            private set => mbPause = value;
         }
 
-        SyncBool mbStart = new();
+        bool mbStart = new();
         public bool IsStart
         {
-            get => mbStart.Value;
-            private set => mbStart.Value = value;
+            get => mbStart;
+            private set => mbStart = value;
         }
 
-        SyncFloat mTimeout = new();
+        float mTimeout = new();
         public float Timeout
         {
-            get => mTimeout.Value;
-            private set => mTimeout.Value = value;
+            get => mTimeout;
+            private set => mTimeout = value;
         }
 
-        SyncFloat mElapsedTime = new();
+        float mElapsedTime = new();
         public float ElapsedTime
         {
-            get => mElapsedTime.Value;
-            private set => mElapsedTime.Value = value;
+            get => mElapsedTime;
+            private set => mElapsedTime = value;
         }
 
-        SyncFloat mLastPauseTime = new();
+        float mLastPauseTime = new();
         public float LastPauseTime
         {
-            get => mLastPauseTime.Value;
-            private set => mLastPauseTime.Value = value;
+            get => mLastPauseTime;
+            private set => mLastPauseTime = value;
         }
 
-        SyncFloat mLastTickTime = new();
+        float mLastTickTime = new();
         float LastTickTime
         {
-            get => mLastTickTime.Value;
-            set => mLastTickTime.Value = value;
+            get => mLastTickTime;
+            set => mLastTickTime = value;
         }
 
-        float ServerTime => ServerTimer.Time;
+        float ServerTime => Server.ServerTime.Time;
 
         public void Start()
         {
