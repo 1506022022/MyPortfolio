@@ -12,7 +12,6 @@
 - **[포메이션](#포메이션)**
   - **[Role](#Role)**
 - **[타이머](#타이머)**
-- **[애니메이션](#애니메이션)**
 - **[어빌리티](#어빌리티)**
   - **[리버스 어빌리티](#리버스-어빌리티)**   
   - **[Burn](#Burn)**   
@@ -49,17 +48,17 @@
 
 처음에는 모듈화에 집중해서 트리 구조의 프레임워크를 설계했습니다.
 하위 노드에 해당하는 클래스가 부모 노드의 정보를 모르게 하여 커플링을
-줄이도록 한 의도는 달성했지만 트리 구조에서의 어려움을 겪었습니다.
+줄이도록 한 의도는 달성했지만 계층 구조에서의 어려움을 겪었습니다.
 
 클래스의 상속처럼 파고 들어가는 구조이다 보니 개발을 진행할 수록
-부모 자식의 관리가 어려워 질 수도 있겠다는 느낌을 받았습니다.
+계층 구조에 수정이 필요한 경우가 발생했습니다.
 
+처음에 구조를 잘 작성하면 그런 일이 없겠지만 현재의 저에게는 어려운 일이라 판단해
 해당 문제를 개선하기 위해 파이프라인들의 협력 구조로 프레임워크를 설계했습니다.
 
 - 캐릭터 간의 충돌을 관리하는 히트 박스 파이프라인
 - 캐릭터의 능력 발동을 관리하는 어빌리티 파이프라인
-- 컨트롤러의 입력을 관리하는 컨트롤러 파이프라인
-이 세개의 파이프라인이 서로 협력하며 퍼즐 액션 시스템을 구현합니다.
+이러한 파이프라인이 서로 협력하며 퍼즐 액션 시스템을 구현합니다.
 ```
   ## 플로우
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/20250abe-9da2-4b5e-9266-21884dd67679" width="50%" height="50%"/>
@@ -357,7 +356,7 @@ Serializable 특성을 통해 직렬화했습니다.
 ```
  Role 클래스는 축구의 플레이어에 빗댈 수 있습니다. 축구에서 플레이어가 이동하는 방식은 사람마다 다를 수
 있습니다. 뛰어서 이동하거나 슬라이딩해서 이동할 수도 있습니다. 이렇듯 다양한 이동을 처리하기 위해 움직임을
-담당하는 MovementTransform 클래스에 위임했습니다.
+담당하는 TransformBaseMovement 클래스에 위임했습니다.
 ```
   ## 코드
 ``` C#
@@ -673,78 +672,6 @@ namespace PlatformGame
 }
 ```
 
-  ## 애니메이션
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/b5ddf6cf-6f2b-4741-86fb-8d01ab2bc7c4" width="30%" height="30%"/>
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/928537d2-581a-4ab7-9321-846e1a31bc1c" width="30%" height="30%"/>
-
-```
-캐릭터 애니메이션을 애니메이터가 관리할 수 있도록 트리거를 핸들링하는 기능을 만들었습니다.
-
- 처음에는 어떤 애니메이션을 가진 캐릭터더라도 사용 가능한 기능을 만들기 위해 고민했습니다.
-캐릭터마다 동작의 개수와 종류가 다르다는 점에 어려움을 겪었습니다. 동작들을 딕셔너리로 관리해서
-애니메이션을 실행하는 방식에 대해 고민했지만, 기획자와 의논 끝에 동작을 정형화하여 한정된 범위
-내에서 관리하도록 결정했습니다.
-
-결과적으로 캐릭터의 상태에 따라 실행될 트리거를 지정하도록 구현했습니다.
-```
-  ## 코드
-``` C#
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace PlatformGame.Character.Animation
-{
-    [Serializable]
-    public class StateTriggerPair
-    {
-        public CharacterState State;
-        public string Trigger;
-    }
-
-    [RequireComponent(typeof(Character))]
-    public class CharacterAnimation : MonoBehaviour
-    {
-        public Animator EditorAnimator => mAnimator == null ? null : mAnimator;
-        Character mCharacter;
-        Dictionary<CharacterState, string> mStateMap;
-        [SerializeField] Animator mAnimator;
-        [HideInInspector] public RuntimeAnimatorController BeforeController;
-        [HideInInspector] public List<StateTriggerPair> EditorStateTriggers = new();
-
-        void UpdateAnimation(CharacterState state)
-        {
-            if (!mStateMap.ContainsKey(state))
-            {
-                return;
-            }
-
-            foreach (var t in mStateMap.Values)
-            {
-                mAnimator.ResetTrigger(t);
-            }
-
-            var trigger = mStateMap[state];
-            mAnimator.SetTrigger(trigger);
-        }
-
-        void Awake()
-        {
-            Debug.Assert(mAnimator);
-
-            mCharacter = GetComponent<Character>();
-            mCharacter.OnChangedState.AddListener(UpdateAnimation);
-
-            mStateMap = new Dictionary<CharacterState, string>();
-            foreach (var pair in EditorStateTriggers)
-            {
-                Debug.Assert(!mStateMap.ContainsKey(pair.State), $"{pair.State}");
-                mStateMap.Add(pair.State, pair.Trigger);
-            }
-        }
-    }
-}
-``` 
 ># 어빌리티
 
 ```
