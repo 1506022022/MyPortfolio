@@ -281,8 +281,8 @@ namespace PlatformGame.Character.Combat
 IsReached, IsStoped인데 판단도 하나의 행동이라고 생각해 Role 클래스에 위임할 수 있도록 대리자를
 사용했습니다.
 
- 대부분의 행동을 Role 클래스에 위임했지만, 플레이어가 달리기 시작한다, 멈춘다, 도착했다, 포지션이
-바뀌었다는 것과 같은 상황에 대해서는 작업의 편리성을 위해 UnityEvent를 통해 인스펙터에서 조작할 수 있도록
+ 행동의 처리는 Role 클래스에 위임했고, 플레이어가 달리기 시작한다, 멈춘다, 도착했다, 포지션이
+바뀌었다는 것과 같은 상황에 대한 이벤트는 작업의 편리성을 위해 UnityEvent를 통해 인스펙터에서 조작할 수 있도록
 Serializable 특성을 통해 직렬화했습니다.
 ```
   ## 코드
@@ -354,9 +354,8 @@ Serializable 특성을 통해 직렬화했습니다.
 ```
   ## Role
 ```
- Role 클래스는 축구의 플레이어에 빗댈 수 있습니다. 축구에서 플레이어가 이동하는 방식은 사람마다 다를 수
-있습니다. 뛰어서 이동하거나 슬라이딩해서 이동할 수도 있습니다. 이렇듯 다양한 이동을 처리하기 위해 움직임을
-담당하는 TransformBaseMovement 클래스에 위임했습니다.
+ Role 클래스는 축구의 플레이어에 빗대었습니다. 축구에서 플레이어가 뛰어서 이동하거나 슬라이딩해서 이동할 수도 있습니다.
+이렇듯 다양한 이동에 대해 확장하기 위해 움직임을 담당하는 TransformBaseMovement 클래스에 위임했습니다.
 ```
   ## 코드
 ``` C#
@@ -364,7 +363,7 @@ Serializable 특성을 통해 직렬화했습니다.
  {
      bool mbStop;
      [SerializeField] Formation mFormation;
-     [SerializeField] MovementTransform mTrace;
+     [SerializeField] TransformBaseMovement mTrace;
      [SerializeField] Transform mPosition;
 
      void Awake()
@@ -411,11 +410,11 @@ Serializable 특성을 통해 직렬화했습니다.
 
 ```
 타이머 클래스는 MonoBehaviour를 상속받은 TimerComponent와, Timer class로 구현하였습니다.
-처음에는 TimerComponent 하나만 구현하려고 했었는데 아무래도 Timer는 여러 클래스에서 사용하는
+처음에는 TimerComponent 하나만 구현하려고 했었는데 Timer는 컴포넌트뿐 아니라 클래스에서도 사용하는
 기능이다 보니 분리하게 되었습니다.
 
 타이머는 시간을 재는 단순한 기능만을 가지고 있지만, 이벤트의 활용도가 매우 높다고 생각합니다.
-때문에 외부에서 필요한 이벤트에 기능을 연결할 수 있도록 설계해 보았습니다.
+주로 규격화 되지 않은 프로토타입을 구현할 때 매우 유용하게 사용했습니다.
 
 ```
   ## 코드 (TimerComponent)
