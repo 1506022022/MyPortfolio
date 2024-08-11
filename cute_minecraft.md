@@ -1,4 +1,4 @@
-<p align="right">  
+![image](https://github.com/user-attachments/assets/3b3c8c4d-d271-4878-b4fa-d4e4a9d07c10)![image](https://github.com/user-attachments/assets/2d6be1b7-5ea7-4aad-b64d-4b11f9ac57d3)<p align="right">  
   <a href="https://youtu.be/sdgQF_41lS4">
     <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
   </a>
@@ -17,6 +17,7 @@
   - **[게임 매니저](#게임-매니저)**
   - **[콘텐츠 로더](#콘텐츠-로더)**
 - **[디버그 로그](#디버그-로그)**
+- **[컨트롤러](#컨트롤러)**
 - **[크래프팅](#크래프팅)**
   - **[Item](#Item)**
 - **[어빌리티](#어빌리티)**
@@ -879,6 +880,117 @@ namespace PlatformGame.Contents
         }
 
     }
+```
+># **컨트롤러**
+<img src="https://github.com/user-attachments/assets/24c2b30c-1fb1-4c25-8dcf-d0db57b18e88" width="40%" height="40%"/>
+
+```
+조작에 따라 이벤트를 실행하는 기능을 가지고 있습니다.
+
+처음에는 캐릭터를 조작하는 용도만 생각하고 캐릭터와 커플링을 가졌었는데, 'esc 키를 눌러 설정창을 연다'와 같은 활용도
+빈번하게 일어날 수 있다고 생각해 최대한 단순화 하려고 의도했습니다.
+
+한편으로는 커스텀 에디터를 사용해 이벤트를 쉽게 넣을 수 있도록하려고 작업하던 중, enum을 사용하면 문자열 배열을 사용한
+팝업을 사용하지 않더라도 같은 효과를 낼 수 있겠다는 생각에 커스텀 에디터를 작성하지 않고 enum과 UnityEvent를 가진
+클래스를 만들어 리스트로 작성했습니다.
+```
+  ## 코드
+``` C#
+using PlatformGame.Input;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+[Serializable]
+class ButtonData
+{
+    public ActionKey.Button Key;
+    public InputType InputType;
+    public UnityEvent Action;
+}
+
+enum InputType
+{
+    Down, Up, Stay
+}
+
+public class PlayerController : MonoBehaviour
+{
+    [Header("Controls")]
+    [SerializeField] bool mIsActive;
+    [SerializeField] List<ButtonData> ButtonEvents;
+
+    public bool IsActive
+    {
+        get => mIsActive;
+        private set => mIsActive = value;
+    }
+
+    public void SetActive(bool able)
+    {
+        IsActive = able;
+    }
+
+    public void ChangeEvent(string key, UnityEvent action)
+    {
+        var origin = ButtonEvents.FindIndex(x => x.Key.ToString() == key);
+        if (origin == -1)
+        {
+            Debug.Log($"Faild. Not found key : {key}");
+            return;
+        }
+        ButtonEvents[origin].Action = action;
+    }
+
+    public UnityEvent GetEvent(string key)
+    {
+        var origin = ButtonEvents.FindIndex(x => x.Key.ToString() == key);
+        Debug.Assert(origin != -1, $"Not found : {key}");
+        return ButtonEvents[origin].Action;
+    }
+
+    public bool ExitsKey(string key)
+    {
+        return ButtonEvents.FindIndex(x => x.Key.ToString() == key) != -1;
+    }
+
+    void Update()
+    {
+        if (!IsActive)
+        {
+            return;
+        }
+
+        foreach (var input in ButtonEvents)
+        {
+            Func<string, bool> inputButton;
+            switch (input.InputType)
+            {
+                case InputType.Down:
+                    inputButton = Input.GetButtonDown;
+                    break;
+                case InputType.Up:
+                    inputButton = Input.GetButtonUp;
+                    break;
+                case InputType.Stay:
+                    inputButton = Input.GetButton;
+                    break;
+                default:
+                    Debug.Assert(false, $"Undefined : {input.InputType}");
+                    return;
+            }
+
+            if (!inputButton(input.Key.ToString()))
+            {
+                continue;
+            }
+
+            input.Action.Invoke();
+        }
+    }
+
+}
 ```
 
 ># **크래프팅**
