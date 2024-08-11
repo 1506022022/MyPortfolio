@@ -5,14 +5,16 @@
 </p>
 
 ># 목차
-- **[파이프 라인](#파이프-라인)**
+- **[이벤트 체인](#이벤트-체인)**
   - **[플로우](#플로우)**
-  - **[히트 박스 파이프라인](#히트-박스-파이프라인)**
-  - **[어빌리티 파이프라인](#어빌리티-파이프라인)**
+  - **[히트 박스 이벤트 체인](#히트-박스-이벤트-체인)**
+  - **[어빌리티 이벤트 체인](#어빌리티-이벤트-체인)**
 - **[포메이션](#포메이션)**
   - **[Role](#Role)**
 - **[타이머](#타이머)**
 - **[디버그 로그](#디버그-로그그)**
+- **[크래프팅](#크래프팅)**
+  - **[Item](#Item)**
 - **[어빌리티](#어빌리티)**
   - **[리버스 어빌리티](#리버스-어빌리티)**   
   - **[Burn](#Burn)**   
@@ -25,8 +27,6 @@
   - **[블록 트리거](#블록-트리거)**   
   - **[액션 버튼](#액션-버튼)**   
   - **[배치](#배치)**
-- **[크래프팅](#크래프팅)**
-  - **[Item](#Item)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -39,47 +39,44 @@
 
 
 
-># 파이프 라인
+># 이벤트 체인
 ```
-프로젝트를 시작하며 가장 먼저 프레임워크를 어떻게 설계할지 고민했습니다.
+프로젝트를 시작하며 프레임워크를 어떻게 설계할지 고민했습니다.
 
-처음에는 모듈화에 집중해서 트리 구조의 프레임워크를 설계했습니다.
+처음에는 트리 구조의 프레임워크를 설계했습니다.
 하위 노드에 해당하는 클래스가 부모 노드의 정보를 모르게 하여 커플링을
-줄이도록 한 의도는 달성했지만 계층 구조에서의 어려움을 겪었습니다.
-
-클래스의 상속처럼 파고 들어가는 구조이다 보니 개발을 진행할 수록
-계층 구조에 수정이 필요한 경우가 발생했습니다.
+줄이도록 한 의도는 달성했지만 개발을 진행하다 보니 구조를 수정해야 하는 경우가 발생했습니다.
 
 처음에 구조를 잘 작성하면 그런 일이 없겠지만 현재는 아직 경험이 부족하다고 판단해
-해당 문제를 개선하기 위해 파이프라인들의 협력 구조로 프레임워크를 설계했습니다.
+해당 문제를 개선하기 위해 이벤트 체인들의 협력 구조로 프레임워크를 설계했습니다.
 
-- 캐릭터 간의 충돌을 관리하는 히트 박스 파이프라인
-- 캐릭터의 능력 발동을 관리하는 어빌리티 파이프라인
-이러한 파이프라인이 서로 협력하며 퍼즐 액션 시스템을 구현합니다.
+- 캐릭터 간의 충돌을 관리하는 히트 박스 이벤트 체인
+- 캐릭터의 능력 발동을 관리하는 어빌리티 이벤트 체인
+이러한 이벤트 체인들이 서로 협력하며 피격 시스템을 구현합니다.
 ```
   ## 플로우
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/20250abe-9da2-4b5e-9266-21884dd67679" width="50%" height="50%"/>
 
 ```
-히트 박스가 충돌하면 히트 박스 파이프라인이 실행됩니다.
-히트 박스 파이프라인은 어빌리티 파이프라인, 타격 이펙트를 호출합니다.
+히트 박스끼리 충돌하면 히트 박스 이벤트 체인이 실행됩니다.
+히트 박스 이벤트 체인은 어빌리티 이벤트 체인을 호출합니다.
 
-어빌리티 파이프라인이 실행됩니다.
-어빌리티 파이프라인은 어빌리티, 어택 로그를 호출합니다.
+어빌리티 이벤트 체인이 실행됩니다.
+어빌리티 이벤트 체인은 어빌리티를 발동시킵니다.
 
-파이프라인은 확장 가능한 시스템입니다.
-예를 들어 어빌리티 파이프라인에 데미지를 추가할 수도 있습니다.
+이벤트 체인을 사용한 이유는  확장 가능성 때문입니다.
+예를 들어 어빌리티 이벤트체인에 데미지를 추가할 수도 있습니다.
 
-# 어택 로그 : "A가 B를 C기술로 공격하였다."와 같이 정보를 단기간 저장합니다. 
+# 어택 로그 : "A가 B를 C기술로 공격하였다."와 같이 정보를 단기간 저장합니다.
 ```
-  ## 히트 박스 파이프라인
+  ## 히트 박스 이벤트 체인
   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/73c83c0d-4d9c-4702-b40f-51ec1700a394" width="30%" height="30%"/>
   
 ```
-히트 박스 파이프라인은 행위의 주체에 대한 정보를 전달받습니다.
+히트 박스 이벤트 체인은 행위의 주체에 대한 정보를 전달받습니다.
 
 예를 들어 피격당한 캐릭터에게 피격 이펙트를 출력하는 기능을 추가하고 싶다면,
-전달받은 행위의 주체 정보 중 피격의 주체 정보를 통해서 해당 기능을 구현할 수 있습니다.  
+전달받은 행위의 주체 정보 중 피격의 주체 정보를 통해서 해당 기능을 구현합니다.
 ```
   ## 코드
 ``` C#
@@ -225,11 +222,11 @@ namespace PlatformGame.Character.Collision
     }
 }
 ``` 
-  ## 어빌리티 파이프라인
+  ## 어빌리티 이벤트 체인
    <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/92bf9e92-fed7-4328-90f4-3e3f12c7da6c" width="40%" height="40%"/>
 
 ```
-어빌리티 파이프라인은 행위의 주체와 어빌리티에 대한 정보를 전달받습니다.
+어빌리티 이벤트 체인은 행위의 주체에 더해 어빌리티에 대한 정보도 전달받습니다.
 
 예를 들어 어택 로그는 어빌리티를 발동한 캐스터와 피격의 주체,
 그리고 발동된 어빌리티에 대한 정보를 전달받아 기록합니다.
@@ -269,18 +266,17 @@ namespace PlatformGame.Character.Combat
 <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/94d0e3cf-cdc5-4b5c-b951-a686f0e658b9" width="30%" height="30%"/>
 
 ```
+ 포메이션은 구성 인원들이 진형을 따라 움직이도록 하는 기능입니다.
+
  포메이션을 설계하면서 축구에 빗대어 고민했습니다. 감독의 지시에 따라 포메이션 자체가 바뀔 수도 있고
 수비수, 공격수 등 역할에 따라 다르게 행동하는 것이 자연스러웠습니다. 이런 구조를 유연하게 구현하기 위해
 감독의 의지와 플레이어의 행동으로 구분 지어 생각해 봤습니다.
 
- 포메이션에서는 의지만을 나타내기 위해 행동을 구현하지 않도록 고민했고, 이벤트를 활용해서 Role 클래스에
-행동을 위임했습니다. 플레이어가 감독이 지시한 위치에 도달했는지, 서 있는 상태인지 판단하는 부분이
-IsReached, IsStoped인데 판단도 하나의 행동이라고 생각해 Role 클래스에 위임할 수 있도록 대리자를
-사용했습니다.
+ 포메이션에서는 의지와 행동의 분리에 집중했고, 이벤트를 활용해서 Role 클래스에
+행동을 위임했습니다.
 
  행동의 처리는 Role 클래스에 위임했고, 플레이어가 달리기 시작한다, 멈춘다, 도착했다, 포지션이
-바뀌었다는 것과 같은 상황에 대한 이벤트는 작업의 편리성을 위해 UnityEvent를 통해 인스펙터에서 조작할 수 있도록
-Serializable 특성을 통해 직렬화했습니다.
+바뀌었다는 것과 같은 상황에 대한 이벤트는 에디터에서의 작업을 위해 Serializable 특성을 사용했습니다.
 ```
   ## 코드
 ``` C#
@@ -351,7 +347,7 @@ Serializable 특성을 통해 직렬화했습니다.
 ```
   ## Role
 ```
- Role 클래스는 축구의 플레이어에 빗대었습니다. 축구에서 플레이어가 뛰어서 이동하거나 슬라이딩해서 이동할 수도 있습니다.
+ Role 클래스는 축구의 플레이어라고 생각했습니다. 축구에서 플레이어가 뛰어서 이동하거나 슬라이딩해서 이동할 수도 있습니다.
 이렇듯 다양한 이동에 대해 확장하기 위해 움직임을 담당하는 TransformBaseMovement 클래스에 위임했습니다.
 ```
   ## 코드
@@ -406,8 +402,8 @@ Serializable 특성을 통해 직렬화했습니다.
 <img src="https://github.com/user-attachments/assets/1e6e2390-2ede-4452-86e4-01784c0a71ee" width="30%" height="30%"/>
 
 ```
-타이머 클래스는 MonoBehaviour를 상속받은 TimerComponent와, Timer class로 구현하였습니다.
-처음에는 TimerComponent 하나만 구현하려고 했었는데 Timer는 컴포넌트뿐 아니라 클래스에서도 사용하는
+타이머 클래스는 Timer class와 MonoBehaviour를 상속받은 TimerComponent로 구현하였습니다.
+처음에는 TimerComponent 하나만 구현하려고 했었는데 Timer는 컴포넌트뿐 아니라 클래스에서도 자주 사용되는
 기능이다 보니 분리하게 되었습니다.
 
 타이머는 시간을 재는 단순한 기능만을 가지고 있지만, 이벤트의 활용도가 매우 높다고 생각합니다.
@@ -668,34 +664,200 @@ namespace PlatformGame
 }
 ```
 
-  ## 디버그 로그 
+  ## 디버그 로그
 <img src="https://github.com/user-attachments/assets/84fb6730-f78c-4bec-b939-bfdc44d65543" width="30%" height="30%"/>
 <img src="https://github.com/user-attachments/assets/fb227b98-569f-402f-a2b8-36e2bca8ba6b" width="30%" height="30%"/>
 
 ```
 개발하다 보면 코드가 제대로 작동하고 있는지 의문이 들 때 디버그 로그를 많이 사용하게 되는 것 같습니다.
-하지만 매번 스크립트에 코드를 넣었다가 지우거나, define 문을 작성하기에는 번거로운 느낌이라 더 편한 방법을
+하지만 매번 스크립트에 Deubg.Log를 넣었다가 지우거나, define 문을 작성하기에는 번거로운 느낌이라 더 편한 방법을
 고민했습니다.
 
-이전부터 언리얼의 블루프린트처럼 작성한 모든 스크립트를 재사용할 수 있으면 좋겠다고 생각하던 참이라
-스크립터블 오브젝트를 활용해서 UnityEvent에 참조를 거는 방식으로 한 번 만들어 봤습니다.
+마침 언리얼의 블루프린트처럼 모든 스크립트를 코드 외에서 재사용할 수 있는 방법을 고민하던 중이었습니다.
+그 방법으로 스크립터블 오브젝트를 활용해서 UnityEvent에 참조를 거는 방식으로 한 번 만들어 봤습니다.
 
 사진은 타이머가 제대로 작동하고 있는지 의문이 들 때 로그를 찍어보는 식으로 확인한 장면입니다.
-이처럼 유니티 이벤트에 스크립터블 오브젝트를 넣어 로그를 찍어보는 식의 코드를 인스펙터 상에서도 재사용
+이처럼 유니티 이벤트에 스크립터블 오브젝트를 넣어 로그를 찍어보는 식의 코드를 컴포넌트를 붙일 필요 없이 재사용
 가능해 상당히 편리하다고 느꼈습니다.
 ```
   ## 코드
 ``` C#
+    [CreateAssetMenu(menuName = "Custom/Log")]
+    public class DebugLog : ScriptableObject
+    {
+        public static void PrintLog(string text)
+        {
+            Debug.Log(text);
+        }
 
+    }
+```
+
+># **크래프팅**
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/83ba5ff9-5fab-430c-b88c-4ced9ef2909f" width="30%" height="30%"/>
+
+```
+ 이 기능을 만들 당시 세부적인 기획 내용을 전달받지 못한 상태에서 구현하다 보니
+OCP를 준수하는 것에 어려움이 있었습니다. 때문에 기획에서 확실한 내용과 모호한 내용을
+구분는 것에 집중했습니다.
+
+- 확실한 내용 : 레시피에 있는 재료를 모두 입력받으면 결과물을 반환한다.
+- 모호한 내용 : 재료를 입력받았을 때의 리액션, 결과물이 반환됐을 때의 리액션.
+
+ 전체적인 틀은 변하지 않아야 하므로 '확실한 내용'을 기반으로 설계하고,
+'모호한 내용'을 구현하는 것은 유연해야 하므로 이벤트를 사용해서 구현했습니다.
+
+
+ 또한 크래프팅은 다양한 게임에 포함되는 내용이다 보니 모듈화하여 구현하고 싶었습니다.
+이 부분에서 문제가 되었던 부분이, 이 게임에서는 결과물을 반환하는 과정에서 크래프팅을
+행한 '주체'를 알아야 한단 부분이었습니다. 하지만 '주체'는 이 게임에서만 존재하는
+Character 클래스였기에 모듈화에 문제가 발생했습니다.
+
+ 이러한 문제를 해결하기 위해 크래프팅의 '주체'에게 결과물을 직접 반환하는 것이 아닌
+간접적으로 반환하여 '주체'로 하여금 습득하게 하는 방식으로 대체했습니다.
+
+```
+  ## 코드
+``` C#
+using PlatformGame.Character.Collision;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace PlatformGame
+{
+    public class Crafting : MonoBehaviour
+    {
+        [Header("References")]
+        [SerializeField] List<QuestItem> mRecipe;
+        public List<QuestItem> Recipe => mRecipe.ToList();
+        [SerializeField] GameObject mResultItem;
+
+        [Header("Option")]
+        public UnityEvent<Item> OnFailEvent;
+        public UnityEvent<Item> OnInputItem;
+        public UnityEvent<GameObject> OnOutputItem;
+        [Tooltip("요구 개수 초과")]
+        [SerializeField] bool mbOvercount;
+        [Tooltip("다른 재료 허가")]
+        [SerializeField] bool mbOtherInputItem;
+
+        public void OnHit(HitBoxCollision collision)
+        {
+            var item = collision.Attacker.GetComponent<Item>();
+            if (!item)
+            {
+                return;
+            }
+
+            InputItem(item);
+        }
+
+        public void ChangeRecipe(List<QuestItem> recipe)
+        {
+            mRecipe = recipe;
+            Init();
+        }
+
+        void Init()
+        {
+            mRecipe.ForEach(x => x.Count = 0);
+        }
+
+        void InputItem(Item input)
+        {
+            var item = mRecipe.Find(x => x.Item.ID == input.ID);
+            if (!mbOtherInputItem && item == null)
+            {
+                OnFailEvent.Invoke(input);
+                return;
+            }
+
+            if (!mbOvercount && item.IsFull)
+            {
+                return;
+            }
+
+            item.Count++;
+            OnInputItem.Invoke(input);
+
+            if (mRecipe.Any(x => !x.IsFull))
+            {
+                return;
+            }
+            OutputItem();
+            Init();
+        }
+
+        void OutputItem()
+        {
+            var obj = Instantiate(mResultItem);
+            OnOutputItem.Invoke(obj);
+        }
+
+        void Awake()
+        {
+            Init();
+        }
+
+    }
+}
+```
+
+# Item
+<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
+
+```
+ 처음에는 하나의 재료당 한개, 재료끼리는 겹치지 않는다는 상황을 가정하고 작성하다 보니
+Dictionary 자료형을 사용해 아이템 ID와 소유 여부를 확인했지만 같은 재료를 여러개 요구하는
+레시피에 대해서도 고민하게 되었습니다.
+
+ Dictionary로는 복수의 재료를 관리하기 어렵다고 판단했지만, List를 사용하기에도 ID와 개수
+두 가지 정보를 관리하기에는 어려웠습니다. 때문에 해당 정보를 관리하는 새로운 클래스인 QueseItem
+을 추가하게 되었습니다.
+
+ Item은 최소한의 정보만을 담기 위해 고민했습니다. 크래프팅을 구현할 당시에는 아이템 끼리의 구분만
+가능하면 되었기에 ID값 하나만을 가지도록 했습니다.
+```
+  ## 코드
+``` C#
+using System;
+using UnityEngine;
+
+namespace PlatformGame
+{
+    [Serializable]
+    public class QuestItem
+    {
+        [SerializeField] Item mItem;
+        public Item Item => mItem;
+        [SerializeField] byte mRequiredCount;
+        public byte RequiredCount => mRequiredCount;
+        byte mCount;
+        public byte Count
+        {
+            get => mCount;
+            set => mCount = (byte)Mathf.Clamp(value, 0, 255);
+        }
+        public bool IsFull => mRequiredCount <= Count;
+    }
+
+    public class Item : MonoBehaviour
+    {
+        [SerializeField] int mID;
+        public int ID => mID;
+    }
+
+}
 ```
 
 ># 어빌리티
 
 ```
 어빌리티는 캐릭터가 사용할 수 있는 능력입니다.
-어빌리티는 히트 박스 파이프라인에 의해서만 실행됩니다.
 
-히트 박스에 어빌리티를 부여하고, 히트 박스 이벤트가 발동하면 어빌리티 파이프라인이 실행되어
+히트 박스에 어빌리티를 부여하고, 히트 박스 이벤트가 발동하면 어빌리티 이벤트 체인이 실행되어
 최종적으로 어빌리티가 발동됩니다.
 
 어빌리티는 행위의 주체와 발동한 어빌리티에 대한 정보를 가지고 구현됩니다.
@@ -830,164 +992,4 @@ namespace PlatformGame.Character.Combat
 예를 들어 마인크래프트에서 블록을 배치하는 것과 동일합니다.
 마인크래프트는 보기에는 지형 블록만 배치되어 있다고 생각할 수도 있지만
 보이지 않는 블록(공기, 빛 등)들로 꽉 차 있는 상태입니다.
-```
-
-># **크래프팅**
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/83ba5ff9-5fab-430c-b88c-4ced9ef2909f" width="30%" height="30%"/>
-
-```
- 이 기능을 만들 당시 세부적인 기획 내용을 전달받지 못한 상태에서 구현하다 보니
-OCP를 준수하는 것에 어려움이 있었습니다. 때문에 기획에서 확실한 내용과 모호한 내용을
-구분는 것에 집중했습니다.
-
-- 확실한 내용 : 레시피에 있는 재료를 모두 입력받으면 결과물을 반환한다.
-- 모호한 내용 : 재료를 입력받았을 때의 리액션, 결과물이 반환됐을 때의 리액션.
-
- 전체적인 틀은 변하지 않아야 하므로 '확실한 내용'을 기반으로 설계하고,
-'모호한 내용'을 구현하는 것은 유연해야 하므로 이벤트를 사용해서 구현했습니다.
-
-
- 또한 크래프팅은 다양한 게임에 포함되는 내용이다 보니 모듈화하여 구현하고 싶었습니다.
-이 부분에서 문제가 되었던 부분이, 이 게임에서는 결과물을 반환하는 과정에서 크래프팅을
-행한 '주체'를 알아야 한단 부분이었습니다. 하지만 '주체'는 이 게임에서만 존재하는
-Character 클래스였기에 모듈화에 문제가 발생했습니다.
-
- 이러한 문제를 해결하기 위해 크래프팅의 '주체'에게 결과물을 직접 반환하는 것이 아닌
-간접적으로 반환하여 '주체'로 하여금 습득하게 하는 방식으로 대체했습니다.
-
-```
-  ## 코드
-``` C#
-using PlatformGame.Character.Collision;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Events;
-
-namespace PlatformGame
-{
-    public class Crafting : MonoBehaviour
-    {
-        [Header("References")]
-        [SerializeField] List<QuestItem> mRecipe;
-        public List<QuestItem> Recipe => mRecipe.ToList();
-        [SerializeField] GameObject mResultItem;
-
-        [Header("Option")]
-        public UnityEvent<Item> OnFailEvent;
-        public UnityEvent<Item> OnInputItem;
-        public UnityEvent<GameObject> OnOutputItem;
-        [Tooltip("요구 개수 초과")]
-        [SerializeField] bool mbOvercount;
-        [Tooltip("다른 재료 허가")]
-        [SerializeField] bool mbOtherInputItem;
-
-        public void OnHit(HitBoxCollision collision)
-        {
-            var item = collision.Attacker.GetComponent<Item>();
-            if (!item)
-            {
-                return;
-            }
-
-            InputItem(item);
-        }
-
-        public void ChangeRecipe(List<QuestItem> recipe)
-        {
-            mRecipe = recipe;
-            Init();
-        }
-
-        void Init()
-        {
-            mRecipe.ForEach(x => x.Count = 0);
-        }
-
-        void InputItem(Item input)
-        {
-            var item = mRecipe.Find(x => x.Item.ID == input.ID);
-            if (!mbOtherInputItem && item == null)
-            {
-                OnFailEvent.Invoke(input);
-                return;
-            }
-
-            if (!mbOvercount && item.IsFull)
-            {
-                return;
-            }
-
-            item.Count++;
-            OnInputItem.Invoke(input);
-
-            if (mRecipe.Any(x => !x.IsFull))
-            {
-                return;
-            }
-            OutputItem();
-            Init();
-        }
-
-        void OutputItem()
-        {
-            var obj = Instantiate(mResultItem);
-            OnOutputItem.Invoke(obj);
-        }
-
-        void Awake()
-        {
-            Init();
-        }
-
-    }
-}
-```
-# Item
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/55429f91-e8e9-4827-bd2c-3013b44bcc33" width="30%" height="30%"/>
-
-```
-
-
- 처음에는 하나의 재료당 한개, 재료끼리는 겹치지 않는다는 상황을 가정하고 작성하다 보니
-Dictionary 자료형을 사용해 아이템 ID와 소유 여부를 확인했지만 같은 재료를 여러개 요구하는
-레시피에 대해서도 고민하게 되었습니다.
-
- Dictionary로는 복수의 재료를 관리하기 어렵다고 판단했지만, List를 사용하기에도 ID와 개수
-두 가지 정보를 관리하기에는 어려웠습니다. 때문에 해당 정보를 관리하는 새로운 클래스인 QueseItem
-을 추가하게 되었습니다.
-
- Item은 최소한의 정보만을 담기 위해 고민했습니다. 크래프팅을 구현할 당시에는 아이템 끼리의 구분만
-가능하면 되었기에 ID값 하나만을 가지도록 했습니다.
-```
-  ## 코드
-``` C#
-using System;
-using UnityEngine;
-
-namespace PlatformGame
-{
-    [Serializable]
-    public class QuestItem
-    {
-        [SerializeField] Item mItem;
-        public Item Item => mItem;
-        [SerializeField] byte mRequiredCount;
-        public byte RequiredCount => mRequiredCount;
-        byte mCount;
-        public byte Count
-        {
-            get => mCount;
-            set => mCount = (byte)Mathf.Clamp(value, 0, 255);
-        }
-        public bool IsFull => mRequiredCount <= Count;
-    }
-
-    public class Item : MonoBehaviour
-    {
-        [SerializeField] int mID;
-        public int ID => mID;
-    }
-
-}
 ```
