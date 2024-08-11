@@ -667,12 +667,12 @@ namespace PlatformGame
     }
 }
 ```
-  ># 로딩
+># 로딩
   ## **로드 매니저**
   ## **게임 매니저**
   ## **콘텐츠 로더**
 
-  ## 디버그 로그
+># 디버그 로그
 <img src="https://github.com/user-attachments/assets/84fb6730-f78c-4bec-b939-bfdc44d65543" width="30%" height="30%"/>
 <img src="https://github.com/user-attachments/assets/fb227b98-569f-402f-a2b8-36e2bca8ba6b" width="30%" height="30%"/>
 
