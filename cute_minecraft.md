@@ -402,7 +402,7 @@ namespace PlatformGame.Character.Combat
  }
 ```
 
-  ## 타이머
+># **타이머**
 <img src="https://github.com/user-attachments/assets/1e6e2390-2ede-4452-86e4-01784c0a71ee" width="30%" height="30%"/>
 
 ```
@@ -667,10 +667,10 @@ namespace PlatformGame
     }
 }
 ```
-  ## 로딩
-  ># **로드 매니저**
-  ># **게임 매니저**
-  ># **콘텐츠 로더**
+  ># 로딩
+  ## **로드 매니저**
+  ## **게임 매니저**
+  ## **콘텐츠 로더**
 
   ## 디버그 로그
 <img src="https://github.com/user-attachments/assets/84fb6730-f78c-4bec-b939-bfdc44d65543" width="30%" height="30%"/>
