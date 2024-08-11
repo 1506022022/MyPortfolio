@@ -666,9 +666,191 @@ namespace PlatformGame
 }
 ```
 ># 로딩
+   <img src="https://github.com/user-attachments/assets/d4cae102-ede6-4f84-ac27-8be4d4bae4c2" width="30%" height="30%"/>
+   
+```
+로드 프로세스는 게임의 흐름을 관리하는 게임 매니저와, 콘텐츠 로드를 담당하는 콘텐츠 로더, 그리고 이 둘의 중재자인 로더 매니저로
+이루어져 있습니다.
+```
   ## **로드 매니저**
+<img src="https://github.com/user-attachments/assets/5faeaf27-4de8-4890-8cd4-6fc309600a90" width="40%" height="40%"/>
+
+```
+씬을 로드하거나 콘텐츠를 로드 할 때, 로드 매니저를 통해서 진행됩니다.
+
+로드 매니저는 한 씬에 복수로 존재할 수 있으며 각각의 타입을 가지고 있습니다.
+미리 지정된 타입에 따라서 어떤 내용을 로드할지 지시할 수 있습니다.
+
+이런 이유로 인해 로드 매니저라는 중재자를 두게 되었습니다.
+```
+  ## 코드
+``` C#
+using UnityEngine;
+
+namespace PlatformGame.Contents
+{
+    public class LoadManager : MonoBehaviour
+    {
+        ContentsLoader mContentsLoader;
+        public LoaderType LoaderType;
+        [Range(0, 1000)] public float LoadDelay = 0f;
+
+        public void Load()
+        {
+            Invoke(nameof(StartLoad), LoadDelay);
+        }
+
+        void StartLoad()
+        {
+            mContentsLoader.SetLoaderType(LoaderType);
+            mContentsLoader.LoadContents();
+        }
+
+        void Start()
+        {
+            mContentsLoader = ContentsLoader.Instance;
+        }
+
+    }
+}
+```
+
   ## **게임 매니저**
+  <img src="https://github.com/user-attachments/assets/53d292fd-e818-4940-aaba-a319429fb136" width="40%" height="40%"/>
+  
+```
+게임 매니저는 게임의 흐름을 관리합니다.
+
+처음에는 게임 매니저가 로드 기능도 담당하고 있었는데, 로드 매니저라는 중재자를 두면서 책임을 나누었습니다.
+그러고 나자 게임 매니저가 가진 특성이 타이머와 별로 다르지 않게 되었습니다.
+하지만 게임 매니저는 게임 흐름을 관리하기 위해 타이머와는 구분되는 기능이 추가될 가능성이 높다고 생각했습니다.
+
+때문에 타이머 컴포넌트를 상속받는 식으로 구현했습니다. 
+```
+  ## 코드
+``` C#
+namespace PlatformGame
+{
+    public class GameManager : TimerComponent
+    {
+
+    }
+}
+```
+
   ## **콘텐츠 로더**
+<img src="https://github.com/user-attachments/assets/a2fee8d3-960f-4d92-8579-4841c31afbd5" width="40%" height="40%"/>
+
+```
+콘텐츠 로더는 로드라는 행동을 수행하는 여러 로더 클래스들을 가지고 있습니다.
+이를 활용해서 전달받은 타입에 맞게 로드 작업을 수행합니다.
+
+로드의 진행 상태는 소지한 로더 클래스로부터 읽어 들여 전달합니다.
+
+해당 상태를 기반으로 로드 시작과 완료에 따른 이벤트를 실행합니다.
+
+앞으로 다양한 로더 클래스를 확장할 수 있도록 하기 위해 커멘드 패턴으로 작성했습니다.
+```
+  ## 코드
+``` C#
+using PlatformGame.Contents.Loader;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace PlatformGame.Contents
+{
+    public enum LoaderType
+    {
+        StageLoader,
+        CubeLoader,
+        LevelLoader
+    }
+
+    public class ContentsLoader : Singleton<ContentsLoader>
+    {
+        public WorkState State => mLoader.State;
+
+        ILevelLoader mLoader = new LevelLoader();
+        List<ILevelLoader> mLoaders = new()
+        {
+            new StageLoader(),
+            null,
+            new LevelLoader(),
+        };
+        [SerializeField] UnityEvent OnStartLoad;
+        [SerializeField] UnityEvent OnLoaded;
+
+        public void LoadContents()
+        {
+            if (!(State is WorkState.Ready))
+            {
+                Debug.LogWarning($"The loader is not ready : {State}");
+                return;
+            }
+            mLoader.LoadNext();
+            OnStartLoad.Invoke();
+            StartCoroutine(CheckLoad());
+        }
+
+        public void SetLoaderType(LoaderType type)
+        {
+            switch (type)
+            {
+                case LoaderType.StageLoader:
+                case LoaderType.LevelLoader:
+                    mLoader = mLoaders[(int)type];
+                    break;
+                case LoaderType.CubeLoader:
+                    mLoader = FindAnyObjectByType<CubeLoader>();
+                    break;
+                default:
+                    Debug.Assert(false, $"Undefined : {type}");
+                    break;
+            }
+            Debug.Assert(mLoader != null);
+        }
+
+        public void AddOnStartLoadEvent(UnityAction action)
+        {
+            OnStartLoad.AddListener(action);
+        }
+
+        public void RemoveOnStartLoadEvent(UnityAction action)
+        {
+            OnStartLoad.RemoveListener(action);
+        }
+
+        public void AddOnLoadedEvent(UnityAction action)
+        {
+            OnLoaded.AddListener(action);
+        }
+
+        public void RemoveOnLoadedEvent(UnityAction action)
+        {
+            OnLoaded.RemoveListener(action);
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            DontDestroyOnLoad(gameObject);
+        }
+
+        IEnumerator CheckLoad()
+        {
+            WaitForSeconds mWait = new WaitForSeconds(0.5f);
+            while (State != WorkState.Ready)
+            {
+                yield return mWait;
+            }
+
+            OnLoaded.Invoke();
+        }
+    }
+}
+```
 
 ># 디버그 로그
 <img src="https://github.com/user-attachments/assets/84fb6730-f78c-4bec-b939-bfdc44d65543" width="30%" height="30%"/>
