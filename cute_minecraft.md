@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/3b3c8c4d-d271-4878-b4fa-d4e4a9d07c10)![image](https://github.com/user-attachments/assets/2d6be1b7-5ea7-4aad-b64d-4b11f9ac57d3)<p align="right">  
+<p align="right">  
   <a href="https://youtu.be/sdgQF_41lS4">
     <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
   </a>
