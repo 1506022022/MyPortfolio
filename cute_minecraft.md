@@ -1,5 +1,5 @@
 <p align="right">  
-  <a href="https://youtu.be/sdgQF_41lS4">
+  <a href="https://youtu.be/_rYLllPG1Cc">
     <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
   </a>
 </p>
@@ -40,7 +40,7 @@
 |개발기간|2024.05.01 - (진행중)|
 |참여인원|4인|
 |개발환경|유니티|
-|프로젝트 링크|<a href="https://github.com/CREDOCsGames/cute_minecraft">프로젝트 링크</a>|
+|깃허브 링크|<a href="https://github.com/CREDOCsGames/cute_minecraft">프로젝트 링크</a>|
 
 
 
