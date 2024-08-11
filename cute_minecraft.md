@@ -59,7 +59,7 @@
 이러한 이벤트 체인들이 서로 협력하며 피격 시스템을 구현합니다.
 ```
   ## 플로우
-<img src="https://github.com/1506022022/MyPortfolio/assets/88864717/20250abe-9da2-4b5e-9266-21884dd67679" width="50%" height="50%"/>
+<img src="https://github.com/user-attachments/assets/f52cb6cc-39a5-46a7-9ca4-5cbc78350aeb" width="50%" height="50%"/>
 
 ```
 히트 박스끼리 충돌하면 히트 박스 이벤트 체인이 실행됩니다.
@@ -70,12 +70,10 @@
 
 이벤트 체인을 사용한 이유는  확장 가능성 때문입니다.
 예를 들어 어빌리티 이벤트체인에 데미지를 추가할 수도 있습니다.
-
-# 어택 로그 : "A가 B를 C기술로 공격하였다."와 같이 정보를 단기간 저장합니다.
 ```
   ## 히트 박스 이벤트 체인
-  <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/73c83c0d-4d9c-4702-b40f-51ec1700a394" width="30%" height="30%"/>
-  
+  <img src="https://github.com/user-attachments/assets/d3f5a7a3-4bce-449d-afcb-8074dfdc1baa" width="30%" height="30%"/>
+
 ```
 히트 박스 이벤트 체인은 행위의 주체에 대한 정보를 전달받습니다.
 
@@ -227,7 +225,7 @@ namespace PlatformGame.Character.Collision
 }
 ``` 
   ## 어빌리티 이벤트 체인
-   <img src="https://github.com/1506022022/MyPortfolio/assets/88864717/92bf9e92-fed7-4328-90f4-3e3f12c7da6c" width="40%" height="40%"/>
+   <img src="https://github.com/user-attachments/assets/9d5bff53-3171-42a6-9b57-49e35a08e4f0" width="40%" height="40%"/>
 
 ```
 어빌리티 이벤트 체인은 행위의 주체에 더해 어빌리티에 대한 정보도 전달받습니다.
