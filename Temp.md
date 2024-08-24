@@ -550,8 +550,8 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
 타이머를 코드에서도 사용할 수 있도록 Timer class와 Timer Componenet로 나누어 구현했습니니다.
 Timer Component는 Timer class의 이벤트를 핸들링하는 기능을 합니다.
 
-Timer의 Timeout 이벤트에 Timer를 시작시키는 Start이벤트를 주입하면 반복타이머로 작동하기 때문에 별도의 코드를
-작성하지 않았습니다.
+Timer의 Timeout 이벤트에 Timer를 시작시키는 Start이벤트를 주입하면 반복타이머로 작동하기 때문에 별도의 코드를 작성하지
+않았습니다.
 ```
   ## 코드
 ``` C#
