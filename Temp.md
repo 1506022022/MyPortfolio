@@ -12,13 +12,13 @@
   - **[Player Controller](#Player-Controller)**
   - **[Hitbox](#Hitbox)**
 - **[이벤트 체인](#이벤트-체인)**
-  - **[HitBox](#플로우)**
-- **[Scriptable Obejct](스크립터블-오브젝트)**
-  - **[Debug Log](디버그)**
-  - **[Player Character Manager](플레이어-캐릭터-매니저)**
+  - **[HitEventChain](#HitEventChain)**
+- **[Scriptable Obejct](Scriptable-Obejct)**
+  - **[Debug Log](Debug-Log)**
+  - **[Player Character Manager](Player-Character-Manager)**
 - **[정형화](#정형화)**
-  - **[Character](캐릭터)**
-  - **[Load Manager](로드-매니저)**
+  - **[Character](Character)**
+  - **[Load Manager](Load-Manager)**
 
 ># 프로젝트 구성
 |개요|내용|
