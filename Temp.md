@@ -7,10 +7,10 @@
 ># 목차
 - **[이벤트 핸들러](#이벤트-핸들러)**
   - **[IF](#IF)**
-  - **[Condition](Condition)**
-  - **[Portal](Portal)**
-  - **[Player Controller](Player-Controller)**
-  - **[Hitbox](Hitbox)**
+  - **[Condition](#Condition)**
+  - **[Portal](#Portal)**
+  - **[Player Controller](#Player-Controller)**
+  - **[Hitbox](#Hitbox)**
 - **[이벤트 체인](#이벤트-체인)**
   - **[HitBox](#플로우)**
 - **[Scriptable Obejct](스크립터블-오브젝트)**
@@ -181,7 +181,7 @@
     }
 ```
 
->## Portal
+## Portal
   <img src="https://github.com/user-attachments/assets/5b35956e-c50d-407b-ac5f-5f7b627dd7ce" width="40%" height="40%"/>
   <img src="https://github.com/user-attachments/assets/a4610769-a8f0-462d-ac78-65b77986b873" width="33%" height="33%"/>
 
@@ -282,7 +282,7 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
     }
 ```
 
->## Player Controller
+## Player Controller
   <img src="https://github.com/user-attachments/assets/d8e7e5c9-0b1a-4774-94da-2ae993184b37" width="40%" height="40%"/>
   <img src="https://github.com/user-attachments/assets/671650a4-cf75-44dd-94e6-34504d9e8c97" width="40%" height="40%"/>
 
@@ -400,7 +400,7 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
     }
 ```
 
->## Hitbox
+## Hitbox
   <img src="https://github.com/user-attachments/assets/cdcac5af-2308-426e-a84f-40fd94e9b3ac" width="40%" height="40%"/>
   <img src="https://github.com/user-attachments/assets/3f5f9504-3667-4953-b74e-1eca1d496e6d" width="40%" height="40%"/>
 
