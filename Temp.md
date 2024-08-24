@@ -284,15 +284,15 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
 ```
 
 ## Player Controller
-  <img src="https://github.com/user-attachments/assets/d8e7e5c9-0b1a-4774-94da-2ae993184b37" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/6789b9d6-829c-47a6-978a-9e97e739e26d" width="39%" height="39%"/>
   <img src="https://github.com/user-attachments/assets/671650a4-cf75-44dd-94e6-34504d9e8c97" width="40%" height="40%"/>
 
 ```
 컨트롤러 컴포넌트르 만들다보니 "입력에 따라서 이벤트를 실행시킬 뿐인 단순한 기능 아닌가?"하는 생각이 들었습니다.
 이러한 기능이라면 굳이 코드를 길게 쓰지 않아도 이벤트 핸들러로 만들 수 있을 것 같았습니다.
 
-이벤트 핸들러로 만드는것까지는 간단했는데, 입력을 어떻게 처리할지 고민이 들었습니다. 문자열로 처리하면 편하긴 하지만
-오타가 발생할 수 있으니 디버깅에 어려움을 겪을 것 같았고, 커스텀 에디터를 작성하자니 굳이 필요한 걸까라는 생각이 들었습니다.
+이벤트 핸들러로 만드는것까지는 간단했는데, 입력을 어떻게 처리할지 고민이 들었습니다. 키값을 문자열로 처리하면 편하긴 하지만
+오타가 발생할 수 있으니 디버깅에 어려움을 겪을 것 같았고, 커스텀 에디터를 작성하자니 굳이 필요할까라는 생각이 들었습니다.
 
 그러다 enum을 사용하면 제가 생각했던 커스텀 에디터의 기능과 동일한 결과를 가져올 수 있겠다는 생각이 들어 아래와 같이 구현했습니다.
 ```
@@ -402,7 +402,7 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
 ```
 
 ## Hitbox
-  <img src="https://github.com/user-attachments/assets/cdcac5af-2308-426e-a84f-40fd94e9b3ac" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/cdcac5af-2308-426e-a84f-40fd94e9b3ac" width="34%" height="34%"/>
   <img src="https://github.com/user-attachments/assets/3f5f9504-3667-4953-b74e-1eca1d496e6d" width="40%" height="40%"/>
 
 ```
