@@ -1,6 +1,6 @@
 <p align="right">  
   <a href="https://youtu.be/_rYLllPG1Cc">
-    <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="40%" height="40%">
+    <img src="https://youtu.be/IA1g5FpPwRc" width="40%" height="40%">
   </a>
 </p>
 
@@ -37,7 +37,7 @@
 - 단순한 기능 구현
 - 협업
 
-이벤트 핸들러는 프로그래밍에 대한 수준이 높지 않아도 에디터에서 작업이 가능합니다.
+이벤트 핸들러는 프로그래밍에 대한 수준이 높지 않은 사람도 에디터에서 작업이 가능합니다.
 또한 조건에 따라 행동이 달라지는 경우에 복잡한 switch문을 대체할 수 있다는 점에서 코드를 간결하게 만드는 이점이 있습니다.
 
 "이러한 이점을 살리면 코드를 에디터에서 작성할 수 있지 않을까?"하는 생각에서 다음의 유형을 컴포넌트로 만들어 봤습니다.
