@@ -14,7 +14,7 @@
   - **[Timer](#Timer)**
 - **[이벤트 체인](#이벤트-체인)**
   - **[HitEventChain](#HitEventChain)**
-- **[Scriptable Obejct](Scriptable-Obejct)**
+- **[스크립터블 오브젝트](Scriptable-Obejct)**
   - **[Debug Log](Debug-Log)**
   - **[Player Character Manager](Player-Character-Manager)**
 - **[정형화](#정형화)**
