@@ -11,6 +11,7 @@
   - **[Portal](#Portal)**
   - **[Player Controller](#Player-Controller)**
   - **[Hitbox](#Hitbox)**
+  - **[Timer](#Timer)**
 - **[이벤트 체인](#이벤트-체인)**
   - **[HitEventChain](#HitEventChain)**
 - **[Scriptable Obejct](Scriptable-Obejct)**
@@ -533,6 +534,134 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
             mLastHitTime = Time.time - HitDelay + 0.1f;
             mHitPipeline = Pipelines.Instance.HitBoxColliderPipeline;
             mHitPipeline.InsertPipe(InvokeHitEvent);
+        }
+
+    }
+```
+
+>## Timer
+  <img src="https://github.com/user-attachments/assets/ba8994fd-3bc8-4136-81f4-bcdb12c95ead" width="50%" height="50%"/>
+  <img src="https://github.com/user-attachments/assets/942c2f2d-4986-47b1-9290-b3d2b72190da" width="36%" height="36%"/>
+
+```
+스톱워치처럼 시간에 대한 이벤트들로 구성된 타이머입니다. 에디터상에선 주로 연출이나 처리에 딜레이가 필요한 경우에 사용했습니다.
+타이틀에서도 캐릭터가 서 있다가 큐브가 회전할 때 뛰는 연출을 타이머로 구현했습니다.
+
+타이머를 코드에서도 사용할 수 있도록 Timer class와 Timer Componenet로 나누어 구현했습니니다.
+Timer Component는 Timer class의 이벤트를 핸들링하는 기능을 합니다.
+
+Timer의 Timeout 이벤트에 Timer를 시작시키는 Start이벤트를 주입하면 반복타이머로 작동하기 때문에 반복 타이머의 기능은 따로 코드를
+작성하지 않았습니다.
+```
+  ## 코드
+``` C#
+    public class Timer
+    {
+        public event Action<Timer> OnStartEvent;
+        public event Action<Timer> OnStopEvent;
+        public event Action<Timer> OnPauseEvent;
+        public event Action<Timer> OnResumeEvent;
+        public event Action<Timer> OnTimeoutEvent;
+        public event Action<Timer> OnTickEvent;
+
+        public bool IsPause { get; private set; }
+
+        public bool IsStart { get; private set; }
+
+        public float Timeout { get; private set; }
+
+        public float ElapsedTime { get; private set; }
+
+        public float LastPauseTime { get; private set; }
+
+        private float LastTickTime { get; set; }
+
+        static float ServerTime => Server.ServerTime.Time;
+
+        public void Start()
+        {
+            if (IsStart)
+            {
+                return;
+            }
+
+            IsStart = true;
+            IsPause = false;
+            ElapsedTime = 0f;
+            LastTickTime = ServerTime;
+            OnStartEvent?.Invoke(this);
+        }
+
+        public void Stop()
+        {
+            if (IsStart == false)
+            {
+                return;
+            }
+
+            IsStart = false;
+            OnStopEvent?.Invoke(this);
+        }
+
+        public void Pause()
+        {
+            if (IsPause)
+            {
+                return;
+            }
+
+            IsPause = true;
+            LastPauseTime = ServerTime;
+            OnPauseEvent?.Invoke(this);
+        }
+
+        public void Resume()
+        {
+            if (!IsPause)
+            {
+                return;
+            }
+
+            IsPause = false;
+            OnResumeEvent?.Invoke(this);
+        }
+
+        public void SetTimeout(float timeout)
+        {
+            Timeout = timeout;
+        }
+
+        public void RemoveTimeout()
+        {
+            Timeout = 0f;
+        }
+
+        public void Tick()
+        {
+            if (!IsStart || IsPause)
+            {
+                return;
+            }
+
+            ElapsedTime += (ServerTime - LastTickTime) - Mathf.Max((LastPauseTime - LastTickTime), 0);
+            LastTickTime = ServerTime;
+            OnTickEvent?.Invoke(this);
+
+            if (Timeout == 0)
+            {
+                return;
+            }
+
+            if (Timeout < ElapsedTime)
+            {
+                DoTimeout();
+            }
+        }
+
+        void DoTimeout()
+        {
+            IsStart = false;
+            OnTimeoutEvent?.Invoke(this);
         }
 
     }
