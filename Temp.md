@@ -46,8 +46,8 @@
 ```
 
 ## IF
-  <img src="https://github.com/user-attachments/assets/fc35f875-77b4-47e7-9ab6-5aea4b042805" width="30%" height="30%"/>
-  <img src="https://github.com/user-attachments/assets/a012ff72-e283-4cf7-b11f-7c5e43e2150a" width="30%" height="30%"/>
+  <img src="https://github.com/user-attachments/assets/a1c875a6-7107-49bf-9b29-b02c2b5d4200" width="30%" height="30%"/>
+  <img src="https://github.com/user-attachments/assets/c39ed599-22cd-47b5-8c5b-000833e0fb34" width="30%" height="30%"/>
 
 ```
 퍼즐 중에 화로에 불이 붙으면 해결되는 퍼즐을 만들었습니다.
