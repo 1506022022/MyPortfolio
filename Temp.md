@@ -45,8 +45,8 @@
 ```
 
 ## IF
-  <img src="https://github.com/user-attachments/assets/fc35f875-77b4-47e7-9ab6-5aea4b042805" width="40%" height="40%"/>
-  <img src="https://github.com/user-attachments/assets/a012ff72-e283-4cf7-b11f-7c5e43e2150a" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/fc35f875-77b4-47e7-9ab6-5aea4b042805" width="30%" height="30%"/>
+  <img src="https://github.com/user-attachments/assets/a012ff72-e283-4cf7-b11f-7c5e43e2150a" width="30%" height="30%"/>
 
 ```
 퍼즐 중에 화로에 불이 붙으면 해결되는 퍼즐을 만들었습니다.
@@ -137,7 +137,8 @@
 ```
 
 ## Condition
-  <img src="https://github.com/user-attachments/assets/dc70fa60-1a40-47ca-a118-d6cf013eae03" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/fb63b71d-49e8-44c4-835d-5d6408923924" width="30%" height="30%"/>
+  <img src="https://github.com/user-attachments/assets/df990ed5-43bb-4b46-a11f-8b534a33fbbb" width="30%" height="30%"/>
 
 ```
 하나의 조건만 확인하는 bool 이외에도 여러 조건을 확인하는 경우도 있습니다.
