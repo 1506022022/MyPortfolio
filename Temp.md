@@ -7,10 +7,10 @@
 ># 목차
 - **[이벤트 핸들러](#이벤트-핸들러)**
   - **[IF](#IF)**
-  - **[Condition](조건)**
-  - **[Portal](포털)**
-  - **[Player Controller](플레이어-컨트롤러)**
-  - **[Hitbox](히트박스)**
+  - **[Condition](Condition)**
+  - **[Portal](Portal)**
+  - **[Player Controller](Player-Controller)**
+  - **[Hitbox](Hitbox)**
 - **[이벤트 체인](#이벤트-체인)**
   - **[HitBox](#플로우)**
 - **[Scriptable Obejct](스크립터블-오브젝트)**
