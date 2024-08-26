@@ -14,12 +14,15 @@
   - **[Timer](#Timer)**
 - **[이벤트 체인](#이벤트-체인)**
   - **[HitEventChain](#HitEventChain)**
-- **[스크립터블 오브젝트](Scriptable-Obejct)**
-  - **[Debug Log](Debug-Log)**
-  - **[Player Character Manager](Player-Character-Manager)**
+- **[스크립터블 오브젝트](#스크립터블-오브젝트 )**
+  - **[Debug Log](#Debug-Log)**
+  - **[Player Character Manager](#Player-Character-Manager)**
+  - **[Shy Box Manager](#Shy-Box-Manager)**
 - **[정형화](#정형화)**
-  - **[Character](Character)**
-  - **[Load Manager](Load-Manager)**
+  - **[Character](#Character)**
+  - **[Load Manager](#Load-Manager)**
+  - **[Shy Box](#Shy-Box)**
+  - **[Jailer](Jjailer)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -671,6 +674,258 @@ Timer의 Timeout 이벤트에 Timer를 시작시키는 Start이벤트를 주입�
         {
             IsStart = false;
             OnTimeoutEvent?.Invoke(this);
+        }
+
+    }
+```
+>## 스크립터블 오브젝트
+```
+스크립터블 오브젝트의 장점은 메모리에 데이터 사본을 하나만 저장한다는 것입니다.
+하나의 자산을 공유할 수 있다는 장점이 static 메서드, 중복되는 컴포넌트등의 코드에도 적용될 수 있지
+않을까 생각해봤습니다.
+
+다양한 시도 끝에 스크립터블 오브젝트를 유니티 이벤트와 같이 사용해 시너지를 내는 방식의 작업 스타일을 찾아낼
+수 있었습니다.
+
+이 방식은 디버깅에서도 편리함을 제공했고 불필요한 컴포넌트를 붙이지 않아도 되어 만족스러웠습니다.
+특히 유니티에서도 언리얼의 블루프린트와 같은 비주얼 스크립팅의 이점을 가질 수 있어 협업 능력 향상에 도움이
+되었습니다. 
+```
+
+## Debug Log
+  <img src="https://github.com/user-attachments/assets/5df5bc69-15b1-4dd8-96a8-f3c916f3dc96" width="30%" height="30%"/>
+  <img src="https://github.com/user-attachments/assets/db12a7f5-f279-4166-a5a7-a78b28a53e53" width="30%" height="30%"/>
+
+```
+디버깅을 하다 보면 이 코드가 제대로 작동 하고 있는지 의문이 들 때가 있습니다.
+그럴 때마다 스크립트에서 Debug.Log를 넣어 확인하고, 나중에 제거하는 식의 번거로운 과정을
+거쳤습니다.
+
+이런 번거로운 과정 없이 확인할 수는 없을지 고민하다 스크립터블 오브젝트를 사용하게 되었습니다.
+의심되는 부분의 이벤트에 스크립터블 오브젝트를 넣었다 빼기만 하면 되어서 컴파일 과정을 단축할 수 있었습니다.
+```
+  ## 코드
+``` C#
+    [CreateAssetMenu(menuName = "Custom/Log")]
+    public class DebugLog : ScriptableObject
+    {
+        public static void PrintLog(string text)
+        {
+            Debug.Log(text);
+        }
+    }
+```
+
+## Player Character Manager
+  <img src="https://github.com/user-attachments/assets/751dea03-6786-4682-a558-691880067f7c" width="40%" height="40%"/>
+
+```
+플레이어가 조작하고 있는 캐릭터는 다른 기능들에서 필요로 하는 경우가 많았습니다.
+스크립터블 오브젝트가 가진 하나의 자산을 공유할 수 있다는 장점을 사용할 때라고 생각했습니다.
+
+플레이어가 조종할 캐릭터를 선택할 수 있는 기능,
+조종을 중지하거나 재시작 할 수 있는 기능등을 스크립터블 오브젝트로 만들어서 기능을 공유할 수 있도록 했습니다.
+```
+  ## 코드
+``` C#
+    [CreateAssetMenu(menuName = "Custom/PlayerCharacterManager")]
+    public class PlayerCharacterManager : UniqueScriptableObject<PlayerCharacterManager>
+    {
+        public List<Character> JoinCharacters
+        {
+            get => Character.Instances.Where(x => x.CompareTag(TAG_PLAYER)).ToList();
+        }
+        public List<PlayerController> JoinCharactersController
+        {
+            get
+            {
+                var playerControllers = PlayerController.Instances.Where(x => x.CompareTag(TAG_PLAYER)).ToList();
+                if (playerControllers.Count == 0)
+                {
+
+                    playerControllers = FindObjectsOfType<PlayerController>().Where(x => x.CompareTag(TAG_PLAYER)).ToList();
+                }
+
+                if (playerControllers.Count == 0)
+                {
+                    Debug.Log($"No controllers with the {TAG_PLAYER} tag found.");
+                }
+                return playerControllers;
+            }
+        }
+        public Character ControlledCharacter
+        {
+            get => mCurrentController.GetComponentInParent<Character>();
+        }
+        PlayerController mCurrentController;
+        PlayerController mDefaultController;
+        public void ControlDefaultCharacter()
+        {
+            if (JoinCharactersController.Count == 0)
+            {
+                return;
+            }
+            if (mDefaultController == null)
+            {
+                JoinCharactersController.ForEach(x => x.SetActive(false));
+                mDefaultController = JoinCharactersController.First();
+            }
+
+            ReplaceControlWith(mDefaultController);
+        }
+
+        public void ReplaceControlWith(PlayerController controller)
+        {
+            mCurrentController?.SetActive(false);
+            mCurrentController = controller;
+            mCurrentController.SetActive(true);
+        }
+
+        public void SetDefaultCharacter(PlayerController controller)
+        {
+            Debug.Assert(controller.tag == TAG_PLAYER);
+            mDefaultController = controller;
+        }
+
+        public void ReleaseController()
+        {
+            mCurrentController?.SetActive(false);
+            mCurrentController = null;
+        }
+
+        public void SetAnimator(RuntimeAnimatorController controller)
+        {
+            ControlledCharacter.Animator.runtimeAnimatorController = controller;
+            Debug.Log(ControlledCharacter.name);
+        }
+
+    }
+```
+
+## Shy Box Manager
+  <img src="https://github.com/user-attachments/assets/0a438902-ea4a-4276-91ae-58ffb85dba16" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/333545d9-0ee2-4867-be8b-bc78d15f4b15" width="40%" height="40%"/>
+
+```
+간수의 시야에 n초 이상 발각되면 쫓겨나는 규칙의 퍼즐을 구현할 때에도 스크립터블 오브젝트를 사용했습니다.
+
+이때는 팀원이 레벨 배치에 어려움을 겪는 것 같아 어떻게 하면 편하게 레벨을 배치할 수 있도록 기능을 제공할 수 있을까
+고민하게 되었습니다.
+
+가능하면 참조 작업 없이 프리펩을 배치하는 것 만으로 끝날 수 있도록 해야겠다고 생각하게 되어 모듈화를 우선으로 작업을
+진행했습니다. 이런 모듈화에 스크립터블 오브젝트가 큰 도움이 되었습니다.
+
+'Shy Box'라고 하는 부끄럼쟁이 큐브가 간수에게 발각되는 기능을 구현할 때 Box Trigger를 사용해서 구현하는 방식을 택했습니다.
+때문에 트리거 이벤트 핸들러로부터 'Trigger Enter' 이벤트 때 Shy Box의 특정 기능을 발동시켜야 했는데, Box Trigger는 간수가
+가지고 있고 기능은 Shy Box가 가지고 있었기 때문에 커플링이 생겼고 모듈화를 위해서는 커플링을 깨야 하는 상황이었습니다.
+
+이런 문제 상황에서 커플링을 깨기 위해 스크립터블 오브젝트를 사용해서 Trigger Enter 이벤트로부터 Collider 정보를 핸들링하여
+Shy Box에 접근할 수 있게 하여 해결했습니다.
+```
+  ## 코드 (Shy Box Manager)
+``` C#
+    [CreateAssetMenu(menuName ="Custom/Hitbox/ShyBoxManager")]
+    public class ShyBoxManager : UniqueScriptableObject<ShyBoxManager>
+    {
+        public void StartShowing(Collider collider)
+        {
+            var box = collider.GetComponent<ShyBox>();
+            if(box == null)
+            {
+                return;
+            }
+
+            box.StartShowing();
+        }
+
+        public void HideBegin(Collider collider)
+        {
+            var box = collider.GetComponent<ShyBox>();
+            if (box == null)
+            {
+                return;
+            }
+
+            box.HideBegin();
+        }
+
+        public void HideEnd(Collider collider)
+        {
+            var box = collider.GetComponent<ShyBox>();
+            if (box == null)
+            {
+                return;
+            }
+
+            box.HideEnd();
+        }
+
+        public void ResetTrigger(Collider collider)
+        {
+            collider.enabled = false;
+            collider.enabled = true;
+
+        }
+
+    }
+```
+
+  ## 코드 (Shy Box)
+``` C#
+    public class ShyBox : MonoBehaviour
+    {
+        Timer mTenseTimer = new();
+        Timer mCalmDownTimer = new();
+        [SerializeField, Range(1, 100)] int ThresholdsTime;
+        [SerializeField, Range(1, 100)] int CalmDownTime;
+        [SerializeField] UnityEvent ThresholdsEvent;
+        [SerializeField] UnityEvent<Timer> ThresholdsTickEvent;
+        [SerializeField] UnityEvent<Timer> CalmDownTickEvent;
+
+        public void StartShowing()
+        {
+            if (!mTenseTimer.IsStart)
+            {
+                mTenseTimer.Start();
+                return;
+            }
+
+            if (CalmDownTime <= mCalmDownTimer.ElapsedTime)
+            {
+                mTenseTimer.Stop();
+                mTenseTimer.Start();
+            }
+            else
+            {
+                mTenseTimer.Resume();
+            }
+        }
+
+        public void HideBegin()
+        {
+            mTenseTimer.Pause();
+            mCalmDownTimer.Start();
+        }
+
+        public void HideEnd()
+        {
+            mCalmDownTimer.Stop();
+        }
+
+        void Awake()
+        {
+            mTenseTimer.SetTimeout(ThresholdsTime);
+            mTenseTimer.OnTimeoutEvent += (t) => { ThresholdsEvent.Invoke(); };
+            mTenseTimer.OnTickEvent += (t) => ThresholdsTickEvent.Invoke(t);
+
+            mCalmDownTimer.SetTimeout(CalmDownTime);
+            mCalmDownTimer.OnTickEvent += (t) => CalmDownTickEvent.Invoke(t);
+        }
+
+        void Update()
+        {
+            mTenseTimer.Tick();
+            mCalmDownTimer.Tick();
         }
 
     }
