@@ -22,7 +22,7 @@
   - **[Shy Box](#Shy-Box)**
   - **[Jailer](Jjailer)**
   - **[Character](#Character)**
-  - **[Load Manager](#Load-Manager)**
+  - **[ContentsLoader](#Contents-Loader)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -895,6 +895,9 @@ Shy Box는 부끄럼쟁이라는 특징을 가지고 있습니다. 누군가한�
 진정한 시간을 측정하는 CalmDown 타이머의 시간이 충분해지면 긴장도가 0이 되어 Tense 타이머의 시간이 초기화된다.
 
 이런 변하지 않는 내용이 되도록 기획자와 여러 번 회의를 진행했습니다.
+
+이 기능을 만들 당시에는 아직 프로토타입에서 벗어나지 않았기 때문에 이벤트가 변할 수 있으면 좋겠다는 기획자의
+의견이 있어 Shy Box가 발동시키는 이벤트는 정형화하지 않았습니다.
 ```
   ## 코드
 ``` C#
@@ -950,6 +953,107 @@ Shy Box는 부끄럼쟁이라는 특징을 가지고 있습니다. 누군가한�
             mCalmDownTimer.Tick();
         }
 
+    }
+```
+
+>## Contents Loader
+  <img src="https://github.com/user-attachments/assets/2762228f-2808-4751-8dfd-18146e8a5255" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/90089d0a-3f04-40ca-aa7e-7e8063ffaab1" width="40%" height="40%"/>
+
+```
+특정 콘텐츠를 불러 오거나, 다음 씬을 불러오는 등의 기능을 커멘트 패턴을 사용해 정형화했습니다.
+특정 대상을 로드하고 싶을 때는 Load Manager를 통해서 Load 메서드를 호출하기만 하면 됩니다.
+
+기획에 따라서 더 많은 로드 타입을 추가할 수도 있습니다. 혹은 로드를 시작할 때와 완료되었을 때의
+이벤트를 추가할 수도 있습니다.
+```
+
+  ## 코드
+``` C#
+    public enum LoaderType
+    {
+        StageLoader,
+        CubeLoader,
+        LevelLoader
+    }
+
+    public class ContentsLoader : Singleton<ContentsLoader>
+    {
+        public WorkState State => mLoader.State;
+
+        ILevelLoader mLoader = new LevelLoader();
+        List<ILevelLoader> mLoaders = new()
+        {
+            new StageLoader(),
+            null,
+            new LevelLoader(),
+        };
+        [SerializeField] UnityEvent OnStartLoad;
+        [SerializeField] UnityEvent OnLoaded;
+
+        public void LoadContents()
+        {
+            if (!(State is WorkState.Ready))
+            {
+                Debug.LogWarning($"The loader is not ready : {State}");
+                return;
+            }
+            mLoader.LoadNext();
+            OnStartLoad.Invoke();
+            StartCoroutine(CheckLoad());
+        }
+
+        public void SetLoaderType(LoaderType type)
+        {
+            Debug.Assert(Enum.IsDefined(typeof(LoaderType), type),$"Out of range : {(int)type}");
+            switch (type)
+            {
+                case LoaderType.CubeLoader:
+                    mLoader = FindAnyObjectByType<CubeLoader>();
+                    break;
+                default:
+                    mLoader = mLoaders[(int)type];
+                    break;
+            }
+            Debug.Assert(mLoader != null);
+        }
+
+        public void AddOnStartLoadEvent(UnityAction action)
+        {
+            OnStartLoad.AddListener(action);
+        }
+
+        public void RemoveOnStartLoadEvent(UnityAction action)
+        {
+            OnStartLoad.RemoveListener(action);
+        }
+
+        public void AddOnLoadedEvent(UnityAction action)
+        {
+            OnLoaded.AddListener(action);
+        }
+
+        public void RemoveOnLoadedEvent(UnityAction action)
+        {
+            OnLoaded.RemoveListener(action);
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            DontDestroyOnLoad(gameObject);
+        }
+
+        IEnumerator CheckLoad()
+        {
+            WaitForSeconds mWait = new WaitForSeconds(0.5f);
+            while (State != WorkState.Ready)
+            {
+                yield return mWait;
+            }
+
+            OnLoaded.Invoke();
+        }
     }
 ```
 
