@@ -22,7 +22,7 @@
   - **[Shy Box](#Shy-Box)**
   - **[Jailer](Jjailer)**
   - **[Character](#Character)**
-  - **[ContentsLoader](#Contents-Loader)**
+  - **[Contents Loader](#Contents-Loader)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -956,7 +956,7 @@ Shy Box는 부끄럼쟁이라는 특징을 가지고 있습니다. 누군가한�
     }
 ```
 
->## Contents Loader
+## Contents Loader
   <img src="https://github.com/user-attachments/assets/2762228f-2808-4751-8dfd-18146e8a5255" width="40%" height="40%"/>
   <img src="https://github.com/user-attachments/assets/90089d0a-3f04-40ca-aa7e-7e8063ffaab1" width="40%" height="40%"/>
 
