@@ -19,10 +19,10 @@
   - **[Player Character Manager](#Player-Character-Manager)**
   - **[Shy Box Manager](#Shy-Box-Manager)**
 - **[정형화](#정형화)**
-  - **[Character](#Character)**
-  - **[Load Manager](#Load-Manager)**
   - **[Shy Box](#Shy-Box)**
   - **[Jailer](Jjailer)**
+  - **[Character](#Character)**
+  - **[Load Manager](#Load-Manager)**
 
 ># 프로젝트 구성
 |개요|내용|
@@ -870,7 +870,33 @@ Shy Box에 접근할 수 있게 하여 해결했습니다.
     }
 ```
 
-  ## 코드 (Shy Box)
+>## 정형화
+
+```
+이벤트 핸들러는 프로토타입을 만들 때 편리합니다. 하지만 유지보수에 있어서는 단점이 있습니다.
+참조에 문제가 생기는 경우도 빈번했고 오류가 발생했을 때 씬에 있는 수많은 오브젝트들을 확인하며
+어디서 오류가 발생했는지 찾아야 하는 어려움을 겪었습니다.
+
+이 부분을 해결하려면 에디터에서의 참조 연결을 최소화해야 했습니다. 기획자와 협의해 변하지 않을
+부분을 정리하고, 이러한 내용을 코드로 정형화시켰습니다.
+
+결과적으로 에디터에서는 컴포넌트를 붙이기만 하면 기대했던 대로 작동하는 정형화된 컴포넌트들이
+만들어졌습니다.
+```
+
+## Shy Box
+  <img src="https://github.com/user-attachments/assets/225e2e00-f532-4624-8a49-8d84f90c22f7" width="37%" height="37%"/>
+  <img src="https://github.com/user-attachments/assets/8f89122c-837b-48d4-958e-19bb630a11c9" width="40%" height="40%"/>
+  
+```
+Shy Box는 부끄럼쟁이라는 특징을 가지고 있습니다. 누군가한테 오랫동안 보이게되면 도망가버립니다.
+
+이 기획 내용을 정형화하면 긴장한 시간을 측정하는 Tense 타이머의 시간이 임계치를 넘으면 이벤트를 발동한다.
+진정한 시간을 측정하는 CalmDown 타이머의 시간이 충분해지면 긴장도가 0이 되어 Tense 타이머의 시간이 초기화된다.
+
+이런 변하지 않는 내용이 되도록 기획자와 여러 번 회의를 진행했습니다.
+```
+  ## 코드
 ``` C#
     public class ShyBox : MonoBehaviour
     {
@@ -879,8 +905,6 @@ Shy Box에 접근할 수 있게 하여 해결했습니다.
         [SerializeField, Range(1, 100)] int ThresholdsTime;
         [SerializeField, Range(1, 100)] int CalmDownTime;
         [SerializeField] UnityEvent ThresholdsEvent;
-        [SerializeField] UnityEvent<Timer> ThresholdsTickEvent;
-        [SerializeField] UnityEvent<Timer> CalmDownTickEvent;
 
         public void StartShowing()
         {
@@ -916,10 +940,8 @@ Shy Box에 접근할 수 있게 하여 해결했습니다.
         {
             mTenseTimer.SetTimeout(ThresholdsTime);
             mTenseTimer.OnTimeoutEvent += (t) => { ThresholdsEvent.Invoke(); };
-            mTenseTimer.OnTickEvent += (t) => ThresholdsTickEvent.Invoke(t);
 
             mCalmDownTimer.SetTimeout(CalmDownTime);
-            mCalmDownTimer.OnTickEvent += (t) => CalmDownTickEvent.Invoke(t);
         }
 
         void Update()
