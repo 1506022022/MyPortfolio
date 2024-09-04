@@ -12,16 +12,13 @@
   - **[Player Controller](#Player-Controller)**
   - **[Hitbox](#Hitbox)**
   - **[Timer](#Timer)**
-- **[이벤트 체인](#이벤트-체인)**
-  - **[HitEventChain](#HitEventChain)**
 - **[스크립터블 오브젝트](#스크립터블-오브젝트 )**
   - **[Debug Log](#Debug-Log)**
   - **[Player Character Manager](#Player-Character-Manager)**
   - **[Shy Box Manager](#Shy-Box-Manager)**
 - **[정형화](#정형화)**
   - **[Shy Box](#Shy-Box)**
-  - **[Jailer](Jjailer)**
-  - **[Character](#Character)**
+  - **[Flower](#Flower)**
   - **[Contents Loader](#Contents-Loader)**
 
 ># 프로젝트 구성
@@ -956,6 +953,75 @@ Shy Box는 부끄럼쟁이라는 특징을 가지고 있습니다. 누군가한�
     }
 ```
 
+## Flower
+  <img src="https://github.com/user-attachments/assets/02485202-0d68-4b35-824e-351f57e9ac52" width="37%" height="37%"/>
+  <img src="https://github.com/user-attachments/assets/3233c6cb-2ede-42c6-9e86-28074709d028" width="40%" height="40%"/>
+
+```
+기획자로부터 "스테이지 내의 모든 꽃이 같은 색이 되면 클리어되는 퍼즐을 만들어주세요."라는 기획 내용을 전달받았습니다.
+
+레벨 배치가 편해지려면 꽃을 정형화하는게 좋겠다는 생각이 들었습니다. 정형화를 위해서는 꽃이 가진 규칙과 구현 내용이 명확해야 했기 때문에
+기획자와 회의를 많이 거쳤습니다. 기획자가 제시한 퍼즐의 규칙끼리 모순이 있어서 같이 고민하기도 하고 구현 내용을 구체화하기 위해서 다양한
+레퍼런스를 찾아가며 이야기했습니다.
+
+최종적으로 나온 내용에대해 아래와 같이 정형화했습니다.
+ - 꽃은 색이 바뀐다.
+ - 퍼즐의 클리어 조건은 꽃의 색상 코드끼리 비교해서 모두 일치는지 확인한다.
+ - 꽃의 색이 바뀔 때의 연출은 변경될 수 있다.
+ - 하나의 스테이지 내에서 꽃의 색이 일치되는 순간 어떤 경우에도 클리어 이벤트가 진행된다.
+```
+
+  ## 코드
+  ``` C#
+    public class Flower : MonoBehaviour, IColorPiece
+    {
+        static List<Flower> mInstances = new();
+        [SerializeField] Color mColor;
+
+        [SerializeField] List<MeshRenderer> mRenderers;
+        public List<MeshRenderer> Renderers => mRenderers;
+        [SerializeField] UnityEvent mChangeColorEvent;
+
+        public Color Color
+        {
+            get => mColor;
+            set
+            {
+                mColor = value;
+                CheckClear();
+                Colorize.Instance.Invoke(Renderers, Color);
+                mChangeColorEvent.Invoke();
+            }
+        }
+
+        static void CheckClear()
+        {
+            var color = mInstances.First().Color;
+            var bClear = mInstances.All(x => x.Color.Equals(color));
+
+            if (bClear)
+            {
+                PuzzleClear.Instance.InvokeClearEvent();
+            }
+        }
+
+        void Awake()
+        {
+            mInstances.Add(this);
+            var material = new Material(mRenderers.First().material);
+            foreach (var renderer in mRenderers)
+            {
+                renderer.material = material;
+            }
+        }
+
+        void OnDestroy()
+        {
+            mInstances.Remove(this);
+        }
+    }
+```
+
 ## Contents Loader
   <img src="https://github.com/user-attachments/assets/2762228f-2808-4751-8dfd-18146e8a5255" width="40%" height="40%"/>
   <img src="https://github.com/user-attachments/assets/90089d0a-3f04-40ca-aa7e-7e8063ffaab1" width="40%" height="40%"/>
@@ -1055,13 +1121,6 @@ Shy Box는 부끄럼쟁이라는 특징을 가지고 있습니다. 누군가한�
             OnLoaded.Invoke();
         }
     }
-```
-
->## 제목
-  <img src="" width="40%" height="40%"/>
-
-```
-
 ```
   ## 코드
 ``` C#
