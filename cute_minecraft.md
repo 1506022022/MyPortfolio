@@ -410,142 +410,85 @@ Portal은 플레이어블 캐릭터에 대한 전용 트리거 이벤트 핸들�
 ```
 
 ## Hitbox
-  <img src="https://github.com/user-attachments/assets/cdcac5af-2308-426e-a84f-40fd94e9b3ac" width="34%" height="34%"/>
-  <img src="https://github.com/user-attachments/assets/3f5f9504-3667-4953-b74e-1eca1d496e6d" width="40%" height="40%"/>
+  <img src="https://github.com/user-attachments/assets/17d7de4d-de59-4978-bf5d-991b48082fbe" width="34%" height="34%"/>
+  <img src="https://github.com/user-attachments/assets/3f5f9504-3667-4953-b74e-1eca1d496e6d" width="30%" height="30%"/>
 
 ```
-공격을 받거나 공격을 하면 이벤트를 발동하는 히트 박스는 굉장히 자주 사용되는 기능인 것 같습니다.
-활용도도 높아서 파이프게임을 만들 때 히트박스만으로도 구현할 수 있었습니다.
+여러 게임들을 분석하며 공격을 어떻게 처리하고 있는지 고민했습니다. 공격이나 피격에 딜레이가 있거나, 무적, 무적 무시, 타수 제한 등
+다양한 변형이 있었습니다. 이러한 확장에 대해서는 이벤트를 통해 열어주고, 히트박스 내에서는 충돌에 대해서만 역할을 제한했습니다.
 
-파이프는 물을 전달받아서 반대 방향으로 보낸다는 특징을 가지고 있는데 이를 히트 박스로 구현해봤습니다.
+히트박스 끼리 충돌할 때 공격과 피격의 구분이 필요했는데, 플래그 변수를 주는 대신 상속을 통해 해결했습니다. 충돌은 빈번하게 처리되는
+만큼 if문 하나라도 줄이고자 했습니다.
 
-히트 박스에는 Attacker 옵션이 켜진 공격 히트 박스와 Attacker 옵션이 꺼진 피격 히트 박스가 있는데
-이 두가지로 파이프들을 연결시켰습니다.
-
-피격 히트 박스에 충돌이 발생하면 공격 받지 않은 모든 방향의 공격 히트 박스를 잠시 활성화합니다.
-이를 반복하면 아래와 같은 흐름이 됩니다.
-
-1번 파이프 왼쪽 피격 히트 박스 충돌 -> 1번 파이프 오른쪽 공격 히트박스 잠깐 활성
--> 2번 파이프 왼쪽 피격 히트 박스 충돌 -> 2번 파이프 오른쪽 공격 히트 박스 잠깐 활성
--> ....
-
-결국 공격을 흘려 보내서 골 지점의 히트 박스를 히트하면 파이프 게임이 클리어됩니다.
+충돌 시의 행동은 부모 클래스인 CollisionBox에 위임했습니다. 이벤트를 발동하는 InvokeEvent를 캡슐화하고 단일책임의 원칙에 따라
+Attack Box는 충돌만을 담당하게 하고 싶었기 때문입니다.
 ```
-  ## 코드
+  ## 코드 (AttackBox)
 ``` C#
-    public delegate void HitEvent(HitBoxCollision collision);
-
-    public struct HitBoxCollision
+    public class AttackBox : CollisionBox
     {
-        public Transform Victim;
-        public Transform Attacker;
-        public HitBoxCollider Subject;
-    }
-
-    public interface IHitBox
-    {
-        public Transform Actor { get; set; }
-        public bool IsDelay { get; }
-        public bool IsAttacker { get; set; }
-        public void DoHit(HitBoxCollision collision);
-    }
-
-    [RequireComponent(typeof(Collider))]
-    [RequireComponent(typeof(Rigidbody))]
-    public class HitBoxCollider : MonoBehaviour, IHitBox
-    {
-        public float HitDelay;
-        [SerializeField] bool mbAttacker;
-        public bool IsAttacker
+        Delay mDelay;
+        List<Collider> mAttacked = new List<Collider>();
+        bool mbNotWithinAttackWindow => !mDelay.IsDelay();
+        public AttackBox(Transform actor, float attackWindow = 0f) : base(actor)
         {
-            get => mbAttacker;
-            set => mbAttacker = value;
+            mDelay = new Delay(attackWindow);
+            mDelay.StartTime = -1f;
         }
 
-        [SerializeField] Transform mActor;
+        public void CheckCollision(Collider other)
+        {
+            if (mbNotWithinAttackWindow ||
+                !other.TryGetComponent<IHitBox>(out var victim) ||
+                victim.HitBox.Actor.Equals(Actor) ||
+                mAttacked.Contains(other))
+            {
+                return;
+            }
+
+            mAttacked.Add(other);
+            CollisionBox.InvokeCollision(this, victim.HitBox);
+        }
+
+        public void OpenAttackWindow()
+        {
+            mDelay.SetStartTime();
+            mAttacked.Clear();
+        }
+
+    }
+```
+
+  ## 코드 (CollisoinBox)
+``` C#
+    public class CollisionBox
+    {
         public Transform Actor
         {
-            get => mActor;
-            set => mActor = value;
+            get; private set;
         }
-        public bool IsDelay => Time.time < mLastHitTime + HitDelay;
-        float mLastHitTime;
-        Pipeline<HitBoxCollision> mHitPipeline;
-        [SerializeField] UnityEvent<HitBoxCollision> mHitEvent;
+        public event Action<HitBoxCollision> OnCollision;
 
-        public void StartDelay()
+        public CollisionBox(Transform actor)
         {
-            mLastHitTime = Time.time;
+            Actor = actor;
         }
 
-        void InvokeHitEvent(HitBoxCollision collision)
+        protected void InvokeEvent(HitBoxCollision collision)
         {
-            mHitEvent.Invoke(collision);
+            OnCollision.Invoke(collision);
         }
 
-        void SendCollisionData(IHitBox victim)
+        protected static void InvokeCollision(CollisionBox attack, CollisionBox hit)
         {
-            var attacker = this;
             var collsion = new HitBoxCollision()
             {
-                Attacker = attacker.Actor,
-                Victim = victim.Actor,
+                Attacker = attack.Actor,
+                Victim = hit.Actor,
             };
-            victim.DoHit(collsion);
-            attacker.DoHit(collsion);
+            attack.InvokeEvent(collsion);
+            hit.InvokeEvent(collsion);
         }
-
-        public void DoHit(HitBoxCollision collision)
-        {
-            StartDelay();
-            collision.Subject = this;
-            mHitPipeline.Invoke(collision);
-        }
-
-        bool CanAttack(IHitBox targetHitBox)
-        {
-            return IsAttacker &&
-                   !targetHitBox.IsDelay &&
-                   !targetHitBox.IsAttacker &&
-                   !Actor.Equals(targetHitBox.Actor);
-        }
-
-        void OnTriggerStay(Collider other)
-        {
-            if (!IsAttacker)
-            {
-                return;
-            }
-
-            var victim = other.GetComponent<IHitBox>();
-            if (victim == null)
-            {
-                return;
-            }
-
-            if (!CanAttack(victim))
-            {
-                return;
-            }
-
-            SendCollisionData(victim);
-        }
-
-
-        void Start()
-        {
-            Debug.Assert(Actor, $"Actor not found : {gameObject.name}");
-            Debug.Assert(GetComponents<Collider>().Any(x => x.isTrigger), $"Trigger not found : {gameObject.name}");
-            Debug.Assert(GetComponent<Rigidbody>().isKinematic, $"Not set Kinematic : {gameObject.name}");
-        }
-
-        void Awake()
-        {
-            mLastHitTime = Time.time - HitDelay + 0.1f;
-            mHitPipeline = Pipelines.Instance.HitBoxColliderPipeline;
-            mHitPipeline.InsertPipe(InvokeHitEvent);
-        }
-
     }
 ```
 
