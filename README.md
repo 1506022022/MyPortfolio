@@ -6,7 +6,7 @@
 |이름|큐즐|
 |장르|3D 퍼즐 액션|
 |개발기간|2024.05.01 - (진행중)|
-|참여인원|3인|
+|참여인원|5인|
 |개발환경|Unity|
 |링크|<a href="https://github.com/1506022022/MyPortfolio/blob/main/cute_minecraft.md">바로가기</a>|
 <img src="https://github.com/user-attachments/assets/e4766513-99c9-4bac-a200-d9cae57518e8" width="50%" height="50%"/>
