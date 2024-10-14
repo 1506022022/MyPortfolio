@@ -6,6 +6,8 @@
 </p>
 
 ># 목차
+- **[프레임워크](#프레임워크)**
+  - **[GameManager](#GameManager)**
 - **[이벤트 핸들러](#이벤트-핸들러)**
   - **[IF](#IF)**
   - **[Condition](#Condition)**
@@ -30,6 +32,77 @@
 |참여인원|5인|
 |개발환경|유니티|
 |깃허브 링크|<a href="https://github.com/CREDOCsGames/cute_minecraft">프로젝트 링크</a>|
+
+>## 프레임워크
+
+## GameManager
+  <img src="https://github.com/user-attachments/assets/a85dfd98-1184-4963-9e5c-c999a1d36f65" width="30%" height="30%"/>   
+
+```
+플레이어의 위치에 따라 이벤트를 발동시킬 수 있도록 설계했습니다.
+주어진 이벤트들을 통해 게임의 규칙을 관리합니다.
+
+GameManager 클래스에서 읽어 들어가면 전체적인 내용을 파악할 수 있어야 한다고 생각해 이런 방식으로 작성했습니다.
+
+씬을 로드하거나 스테이지 내에서 퍼즐 영역에 진입하게 되면 플레이어가 위치해 있는 영역을 찾습니다.
+
+프로젝트의 초기에는 마인크래프트처럼 레벨을 블록 단위로 구성하고, 유저 크리에이티브 컨텐츠를 고려하고 있었기 때문에
+레벨의 최적화에 대해 고민했었습니다. 그 중 하나로 스테이지 내에서는 영역을 좌표 기준으로 세분화해서 인접한 영역만
+활성화하도록 처리하고 있습니다.
+```
+
+  ## 코드
+``` C#
+    public static class GameManager
+    {
+        public static Movie MovieCutscene { get; private set; } = new();
+        public static Area PuzzleArea { get; private set; } = new();
+        public static Area StageArea { get; private set; } = new();
+        public static Selection Title { get; private set; } = new();
+        public static Selection StageSelect { get; private set; } = new();
+        static Timer GameTimer { get; set; } = new();
+
+        public static LanternComponent Lantern;
+
+        static bool VisitTitle;
+
+        static GameManager()
+        {
+            PuzzleArea.OnEnterEvent += PuzzlePieceComponent.EnablePieceInArea;
+            PuzzleArea.OnClearEvent += PuzzlePieceComponent.DisablePieceInArea;
+            PuzzleArea.OnExitEvent += PuzzlePieceComponent.DisablePieceInArea;
+
+            Title.OnEnterEvent += () =>
+            {
+                if (VisitTitle) Title.Skip();
+                VisitTitle = true;
+            };
+
+            StageArea.OnClearEvent += (area) => StageManager.Instance.ClearCurrentStage();
+            StageArea.OnEnterEvent += (area) =>
+            {
+                SoundManagerComponent.Instance.PlayMusic($"Stage_{StageManager.Instance.StageIndex.x}");
+            };
+
+
+            ContentsLoader.OnStartLoad += GameTimer.Stop;
+            ContentsLoader.OnLoaded += GameTimer.Start;
+
+            MovieCutscene.OnPlayEvent += PlayerCharacterManager.Instance.ReleaseController;
+            MovieCutscene.OnEndEvent += PlayerCharacterManager.Instance.ControlDefaultCharacter;
+            ContentsLoader.OnStartLoad += PlayerCharacterManager.Instance.ReleaseController;
+            ContentsLoader.OnLoaded += PlayerCharacterManager.Instance.ControlDefaultCharacter;
+
+            PuzzleArea.OnEnterEvent += (x) => AreaManager.DisConnect();
+            PuzzleArea.OnClearEvent += (b) => AreaManager.Connect();
+
+            ContentsLoader.SetLoaderType(LoaderType.LevelLoader);
+            ContentsLoader.LoadContents();
+
+            Debug.Log("Run Game");
+        }
+    }
+```
 
 >## 이벤트 핸들러
 ```
