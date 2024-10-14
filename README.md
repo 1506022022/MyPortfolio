@@ -9,7 +9,7 @@
 |참여인원|3인|
 |개발환경|Unity|
 |링크|<a href="https://github.com/1506022022/MyPortfolio/blob/main/cute_minecraft.md">바로가기</a>|
-<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOq7iACKolwWWrCgWPU0DBBCeK1l94kghVAAMEblsJxgXS8E3" width="30%" height="30%"/>
+<img src="https://github.com/user-attachments/assets/e4766513-99c9-4bac-a200-d9cae57518e8" width="30%" height="30%"/>
 <hr>
 
 |개요|내용|
