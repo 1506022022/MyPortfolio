@@ -1,6 +1,7 @@
 <p align="right">  
   <a href="https://www.youtube.com/watch?v=FDuE9BE1mF4">
     <img src="https://github.com/user-attachments/assets/e4766513-99c9-4bac-a200-d9cae57518e8" width="70%" height="70%">
+    <br><a href="https://www.youtube.com/watch?v=FDuE9BE1mF4"><b>영상</b></a>
   </a>
 </p>
 
