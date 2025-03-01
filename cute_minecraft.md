@@ -272,9 +272,8 @@ public class Mediator : IMediatorCore, IMediatorInstance
 ### CubePuzzleComponent(1/5)
 이 컴포넌트는 퍼즐을 관리합니다. 중재자를 통해 퍼즐을 구성하는 인스턴스와 코어를 컨트롤하고, 퍼즐의 진행에 맞춰 중재자를 설정해 줍니다.   
 인스턴스와 인스턴스, 코어와 코어 간에는 메시지가 아닌 이벤트를 통해 통신하는데, 이러한 통신도 도와줍니다.   
-
-<p align = "Right"> <image src = "https://github.com/user-attachments/assets/efd21ef5-66a9-4328-995f-9e0b82b59d11"> </p>
 Awake에서 큐브 퍼즐 데이터로부터 퍼즐을 생성합니다. 메시지를 관측하고 중재자를 관리하기 위해 옵저버를 사용합니다. 인스턴스와 코어를 위한 리더를 생성한 후 퍼즐을 시작합니다.   
+<p align = "Right"> <image src = "https://github.com/user-attachments/assets/efd21ef5-66a9-4328-995f-9e0b82b59d11"> </p>
 
 ``` C#
 using System;
@@ -413,7 +412,7 @@ namespace Puzzle
 }
 
 ```
-•	CubePuzzleComponent(3/5)   
+### CubePuzzleComponent(3/5)   
 큐즐에서 퍼즐을 풀어가면 육면체가 회전하며 다른 면으로 이동하게 됩니다. 이때 면마다 사용되는 코어나 인스턴스가 다를 수 있는데, 사용되는 것들만 활성화하는 방법을 고민하게 되었습니다. 아래는 차집합을 활용해 더 이상 사용하지 않는 요소는 반환하고, 계속 사용되는 요소는 유지하며, 새롭게 사용하는 요소를 할당하는 코드입니다.   
 <p align = "Right"> <image src = "https://github.com/user-attachments/assets/e71113b9-df25-4774-99ec-694b5f6cc317"></p>
 
@@ -943,7 +942,8 @@ public class AttackBox : CollisionBox
 
 # 발자국
 [기술 스택] Object Pool, Caching, Particle, Singleton   
-발자국은 캐릭터를 생동감 있게 만듭니다. 저는 발자국을 구현하는 여러 방법 중 파티클과 오브젝트 풀링을 활용하는 방법을 선택했습니다. 캐릭터는 육면체라는 고정된 평면 위에서만 이동하며, 파티클을 수정하여 이펙트를 만들어내기 용이하기 때문입니다.   
+
+> "발자국은 캐릭터를 생동감 있게 만듭니다. 저는 발자국을 구현하는 여러 방법 중 파티클과 오브젝트 풀링을 활용하는 방법을 선택했습니다. 캐릭터는 육면체라는 고정된 평면 위에서만 이동하며, 파티클을 수정하여 이펙트를 만들어내기 용이하기 때문입니다."  
 
 ### Footstep Component (1/2)
 
@@ -1123,20 +1123,19 @@ public static class ParticlePlayer
 > “Unity Event를 사용하여 인스펙터에서의 작업을 용이하게 만들었습니다. 아주 기본적인 트리거 이벤트 핸들러부터 특정 상황이나, 조건에 따른 이벤트 핸들러를 만들어 팀원들의 유니티 작업을 도왔습니다.”
 
 ### IF Component
-조건문을 이벤트 핸들러로 작성했습니다. 언리얼의 블루프린터에서 작업하는 것처럼 간단한 기능을 만들 수 있습니다.
+조건문을 이벤트 핸들러로 작성했습니다. 언리얼의 블루프린터에서 작업하는 것처럼 간단한 기능을 만들 수 있습니다.   
 ![image](https://github.com/user-attachments/assets/63b1d7ce-1f8f-4160-89ee-6a62688bb5cf)
 
 ### Branch Component
-IF 컴포넌트의 확장으로 조건이 거짓일 때도 이벤트를 발동시킵니다.
+IF 컴포넌트의 확장으로 조건이 거짓일 때도 이벤트를 발동시킵니다.   
 ![image](https://github.com/user-attachments/assets/f326edcb-e541-4926-8ff9-40d264760798)
 
 ### Condition Component
-주어진 조건이 참인지 거짓인지 판단하는 컴포넌트들입니다. 
-
+주어진 조건이 참인지 거짓인지 판단하는 컴포넌트들입니다.   
 ![image](https://github.com/user-attachments/assets/11e2215c-4285-4fe2-9f7c-a59fb345eea2)
 
-###Player Controller Component
-입력된 키와 지정된 입력의 종류에 따라 이벤트를 실행해 줍니다. 메뉴 키를 눌러 UI 창을 켜고 끄거나, 버튼 이벤트 액션을 만들 때 유용하게 사용합니다.
+### Player Controller Component
+입력된 키와 지정된 입력의 종류에 따라 이벤트를 실행해 줍니다. 메뉴 키를 눌러 UI 창을 켜고 끄거나, 버튼 이벤트 액션을 만들 때 유용하게 사용합니다.   
 ![image](https://github.com/user-attachments/assets/201581f8-8c59-4e6d-aa0d-509cd7a1abeb)
 
 ### Timer Component 
